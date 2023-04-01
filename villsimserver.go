@@ -32,7 +32,7 @@ import (
 )
 
 type player struct {
-	knownLocations []location
+	knownLocations map[string]location
 	//When I work on updates, they will be a list of updates. This will be a string, but also with metadata about who told them that, and what group it is about.
 	updates string
 }
@@ -40,7 +40,7 @@ type player struct {
 type location struct {
 	name string
 	information int
-	members []character
+	members map[string]character
 }
 
 type character struct {
@@ -127,11 +127,10 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += `"output": "`
 		response += "Locations. In json format"
 		response += `", `
-		for _, currentPlayer := range playerList {
-			for _, currentLocation := range currentPlayer.knownLocations {
-				response += currentLocation.name + ", "
-			}	
-		}
+		for _, currentLocation := range playerList[connId].knownLocations {
+			fmt.Println(currentLocation)
+			response += currentLocation.name + ", "
+		}	
 		response += `"result": "success"`
 	} else {
 		fmt.Println("Command " + strings.TrimSpace(string(dArray[0])) + " not recognised from player " + connId)
@@ -150,11 +149,38 @@ func handleConnections(connId string) {
 
 	toClose := false
 
-	playerList[connId] = player{}
+	//playerList[connId] = new(player)
+
+	villageId := genUUID()
+	playerList[connId].knownLocations = make(map[string]location)
+	//knownLocations[villageId] = location{name: "Random Village"}
+	/*
+	if entry, ok := myMap["key"]; ok {
+
+       // Then we modify the copy
+        entry.Field = 5
+    
+       // Then we reassign map entry
+        myMap["key"] = entry
+   	}
+	*/
+	//playerList[connId].knownLocations = make(map[string]location)
+	knownLocations := playerList[connId].knownLocations[villageId]
+	knownLocations.name = "Random village"
+	playerList[connId].knownLocations[villageId] = knownLocations
+
+	//knownLocations := make(map[string]location)
+
+	/*
+	playerList[connId].knownLocations[villageId] = location{name: "Random Village 1"}
+	playerList[connId][villageId].members = make(map[string]character)
+	*/
 
 	fmt.Println("Player " + connId + " created")
 
         connList[connId].Write([]byte("Connection accepted, account " + connId + " created.\n"))
+
+
 	
 //Send opening information to the player.
 

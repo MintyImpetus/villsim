@@ -24,7 +24,7 @@ import (
         "fmt"
         "net"
         "strings"
-	"strconv"
+//	"strconv"
 	"math"
 	"time"
 	"github.com/google/uuid"
@@ -107,23 +107,27 @@ func getObjectDistance(startingX float64, startingY float64, x float64, y float6
 
 }
 
-func handleActions(connId string, dArray []string) string {
-
+func handleActions(connId string, dArray []string) (string, bool) {
+	toClose := false
 	response := "[ { "
-	currentPlayer := playerList[connId]
+	//Uncomment when referencing the current player's stats is needed.
+	//currentPlayer := playerList[connId]
 	
 	if strings.TrimSpace(string(dArray[0])) == "echo" {
-		response = response + " { " + strings.TrimSpace(string(dArray[1])) 
-	}
-	else if strings.TrimSpace(string(dArray[0])) == "exit" {
+		response += `"output": "`
+		response += strings.TrimSpace(string(dArray[1]))
+		response += `", `
+		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "exit" {
 		fmt.Println("Player " + connId + " has left the game.")
-		response += `"exit": "successful"`
-		delete(playerList, connId)
+		response += `"result": "success"`
+		toClose = true
 	} else {
 		fmt.Println("Command " + strings.TrimSpace(string(dArray[0])) + " not recognised from player " + connId)
+		response += `"result": "invalid"`
 	}
 	response = response + " } ] "
-	return response
+	return response, toClose
 }
 
 func handleConnections(connId string) {
@@ -133,12 +137,19 @@ func handleConnections(connId string) {
 	var response string
 	//var renderUpdates string
 
-	playerList[connId] = player{health: 20, x: 0, y: 1, renderDistance: 3}
+	toClose := false
+
+	playerList[connId] = player{}
+
+	fmt.Println("Player " + connId + " created")
+
+        connList[connId].Write([]byte("Connection accepted, account " + connId + " created.\n"))
 	
 //Send opening information to the player.
 
         for {
 		//Get what the player wants to do and then send a response.
+		fmt.Println("Loop for input from " + connId)
 		message = ""
 
 		response = ""
@@ -150,7 +161,7 @@ func handleConnections(connId string) {
                         return
                 }
 		dArray := strings.Split(data, " ")
-		response = handleActions(connId, dArray)
+		response, toClose = handleActions(connId, dArray)
 		
 		/*
 		actions := getActions(connId)
@@ -161,6 +172,13 @@ func handleConnections(connId string) {
 		//message = response + actions + renderUpdates + "\n"
 		message = response + "\n"
                 connList[connId].Write([]byte(message))
+
+		if toClose {
+			connList[connId].Close()
+			delete(connList, connId)
+			delete(playerList, connId)
+			return
+		}
         }
 }
 
@@ -185,6 +203,7 @@ func main() {
 			fmt.Println(err)
                 continue
 		} else {
+			fmt.Println("Connection received")
 			connId := genUUID()
 			connList[connId] = conn
 			go handleConnections(connId)

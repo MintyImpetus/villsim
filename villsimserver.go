@@ -32,7 +32,7 @@ import (
 )
 
 type player struct {
-	knownLocations map[string]location
+	knownLocations []string
 	//When I work on updates, they will be a list of updates. This will be a string, but also with metadata about who told them that, and what group it is about.
 	updates string
 }
@@ -40,7 +40,7 @@ type player struct {
 type location struct {
 	name string
 	information int
-	members map[string]character
+	members []string
 }
 
 type character struct {
@@ -60,6 +60,8 @@ type action struct {
 }
 
 var playerList = make(map[string]player)
+var locationList = make(map[string]location)
+var characterList = make(map[string]character)
 var connList = make(map[string]net.Conn)
 
 var increment float64 = 0.01
@@ -127,10 +129,11 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += `"output": "`
 		response += "Locations. In json format"
 		response += `", `
-		for _, currentLocation := range playerList[connId].knownLocations {
+		/*for _, currentLocation := range playerList[connId].knownLocations {
 			fmt.Println(currentLocation)
 			response += currentLocation.name + ", "
 		}	
+		*/
 		response += `"result": "success"`
 	} else {
 		fmt.Println("Command " + strings.TrimSpace(string(dArray[0])) + " not recognised from player " + connId)
@@ -152,7 +155,7 @@ func handleConnections(connId string) {
 	//playerList[connId] = new(player)
 
 	villageId := genUUID()
-	playerList[connId].knownLocations = make(map[string]location)
+	locationList[villageId] = location{name: "Random Village"}
 	//knownLocations[villageId] = location{name: "Random Village"}
 	/*
 	if entry, ok := myMap["key"]; ok {
@@ -165,9 +168,11 @@ func handleConnections(connId string) {
    	}
 	*/
 	//playerList[connId].knownLocations = make(map[string]location)
-	knownLocations := playerList[connId].knownLocations[villageId]
-	knownLocations.name = "Random village"
-	playerList[connId].knownLocations[villageId] = knownLocations
+
+	//playerList[connId].knownLocations = append(playerList[connId].knownLocations, villageId)
+
+	currentPlayer := playerList[connId]
+	currentPlayer.knownLocations = append(currentPlayer.knownLocations, villageId)
 
 	//knownLocations := make(map[string]location)
 

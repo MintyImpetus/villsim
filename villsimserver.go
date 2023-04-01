@@ -41,6 +41,8 @@ type location struct {
 	name string
 	information int
 	members []string
+	population int
+	frequency float32
 }
 
 type character struct {
@@ -126,14 +128,18 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += `"result": "success"`
 		toClose = true
 	} else if strings.TrimSpace(string(dArray[0])) == "list" {
-		response += `"output": "`
-		response += "Locations. In json format"
-		response += `", `
-		/*for _, currentLocation := range playerList[connId].knownLocations {
-			fmt.Println(currentLocation)
-			response += currentLocation.name + ", "
-		}	
-		*/
+		response += `"output": [`
+		fmt.Println(playerList[connId].knownLocations)
+		for index, currentLocationId:= range playerList[connId].knownLocations {
+			currentLocation := locationList[currentLocationId]
+			response += ` "`
+			response += currentLocation.name + `"`
+			if index < len(playerList[connId].knownLocations) - 1 {
+				response += ","
+			}
+			response += " "
+		}
+		response += "], "
 		response += `"result": "success"`
 	} else {
 		fmt.Println("Command " + strings.TrimSpace(string(dArray[0])) + " not recognised from player " + connId)
@@ -155,7 +161,11 @@ func handleConnections(connId string) {
 	//playerList[connId] = new(player)
 
 	villageId := genUUID()
-	locationList[villageId] = location{name: "Random Village"}
+	locationList[villageId] = location{name: "Random Village", population: 200}
+
+	villageId = genUUID()
+	fmt.Println(villageId)
+	locationList[villageId] = location{name: "Small Town", population: 700}
 	//knownLocations[villageId] = location{name: "Random Village"}
 	/*
 	if entry, ok := myMap["key"]; ok {
@@ -173,6 +183,7 @@ func handleConnections(connId string) {
 
 	currentPlayer := playerList[connId]
 	currentPlayer.knownLocations = append(currentPlayer.knownLocations, villageId)
+	playerList[connId] = currentPlayer
 
 	//knownLocations := make(map[string]location)
 

@@ -38,6 +38,7 @@ type player struct {
 }
 
 type location struct {
+	name string
 	information int
 	members []character
 }
@@ -122,6 +123,16 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		fmt.Println("Player " + connId + " has left the game.")
 		response += `"result": "success"`
 		toClose = true
+	} else if strings.TrimSpace(string(dArray[0])) == "list" {
+		response += `"output": "`
+		response += "Locations. In json format"
+		response += `", `
+		for _, currentPlayer := range playerList {
+			for _, currentLocation := range currentPlayer.knownLocations {
+				response += currentLocation.name + ", "
+			}	
+		}
+		response += `"result": "success"`
 	} else {
 		fmt.Println("Command " + strings.TrimSpace(string(dArray[0])) + " not recognised from player " + connId)
 		response += `"result": "invalid"`

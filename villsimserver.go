@@ -269,6 +269,24 @@ func handleConnections(connId string) {
         }
 }
 
+func attemptInfoTransfer(theevent event, place location) {
+	timesince := turn - theevent.time
+	rotations := float64(timesince) / 4
+	chance := float64(theevent.newsworthiness) * math.Pow(rotations, float64(theevent.newsworthiness)) * place.frequency * float64(locationList[place.end].population)
+	chance /= place.distance
+	chance /= 100
+	chance += float64(rotations / 2)
+	randomNumber := rand.Float64() * 100
+	fmt.Println(chance)
+	fmt.Println(randomNumber)
+	if randomNumber < chance {
+		fmt.Println("Event information transfered from", locationList[place.start].name, "to", locationList[place.end].name)
+		currentLocation := locationList[place.end]
+		currentLocation.events = append(currentLocation.events, theevent)
+		locationList[place.end] = currentLocation
+	}
+}
+
 func gameLoop() {
 	for {
 		time.Sleep(time.Second)
@@ -279,25 +297,12 @@ func gameLoop() {
 					for _, endevent := range locationList[place.end].events {
 						if endevent.id == startevent.id {
 							transfered = true
+							fmt.Println("Duplicate found in start to end")
 							break
 						}
 					}
 					if transfered == false {
-						timesince := turn - startevent.time
-						rotations := float64(timesince) / 4
-						chance := float64(startevent.newsworthiness) * math.Pow(rotations, float64(startevent.newsworthiness)) * place.frequency * float64(locationList[place.end].population)
-						chance /= place.distance
-						chance /= 100
-						chance += float64(rotations / 2)
-						randomNumber := rand.Float64() * 100
-						fmt.Println(chance)
-						fmt.Println(randomNumber)
-						if randomNumber < chance {
-							fmt.Println("Event information transfered from", locationList[place.start].name, "to", locationList[place.end].name)
-							currentLocation := locationList[place.end]
-							currentLocation.events = append(currentLocation.events, startevent)
-							locationList[place.end] = currentLocation
-						}
+						attemptInfoTransfer(startevent, place)
 					}
 				}
 			}
@@ -309,16 +314,12 @@ func gameLoop() {
 					for _, startevent := range locationList[place.start].events {
 						if startevent.id == endevent.id {
 							transfered = true
+							fmt.Println("Duplicate found in end to start")
 							break
 						}
 					}
 					if transfered == false {
-						if turn - endevent.time > 10 {
-							currentLocation := locationList[place.start]
-							currentLocation.events = append(currentLocation.events, endevent)
-							locationList[place.start] = currentLocation
-						}
-
+						attemptInfoTransfer(endevent, place)
 					}
 				}
 			}

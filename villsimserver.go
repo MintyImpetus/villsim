@@ -58,6 +58,8 @@ type article struct {
 type event struct {
 	newsworthiness int
 	content string
+	id string
+	time int
 }
 
 type character struct {
@@ -82,6 +84,8 @@ var characterList = make(map[string]character)
 var connList = make(map[string]net.Conn)
 
 var increment float64 = 0.01
+
+var turn int = 1
 
 func deleteElement(list []string, i int) []string {
 	return append(list[:i], list[i+1:]...)
@@ -165,10 +169,12 @@ func handleActions(connId string, dArray []string) (string, bool) {
 				for key, location := range locationList {
 					if location.name == eventlocation {
 						fmt.Println("Location got", location.name)
-						location.events = append(location.events, event{newsworthiness: eventnewsworthiness, content: eventcontent})
+						infoId := genUUID()
+						currentEvent := event{newsworthiness: eventnewsworthiness, content: eventcontent, id: infoId, time: turn}
+						location.events = append(location.events, currentEvent)
 						locationList[key] = location
+						fmt.Println("Added news item", currentEvent, "to", eventlocation)
 						break
-						fmt.Println("Added news item", location.events, "to", eventlocation)
 					}
 				}
 			}
@@ -261,6 +267,50 @@ func handleConnections(connId string) {
 func gameLoop() {
 	for {
 		time.Sleep(time.Second)
+		for _, place := range locationList {
+			if place.class == "path" {
+				for _, startevent := range locationList[place.start].events {
+					transfered := false
+					for _, endevent := range locationList[place.end].events {
+						if endevent.id == startevent.id {
+							transfered = true
+							break
+						}
+					}
+					if transfered == false {
+						fmt.Println("Not transfered", startevent)
+						if turn - startevent.time > 10 {
+							currentLocation := locationList[place.end]
+							currentLocation.events = append(currentLocation.events, startevent)
+							locationList[place.end] = currentLocation
+						}
+					}
+				}
+			}
+		}
+		for _, place := range locationList {
+			if place.class == "path" {
+				for _, endevent := range locationList[place.end].events {
+					transfered := false
+					for _, startevent := range locationList[place.start].events {
+						if startevent.id == endevent.id {
+							transfered = true
+							break
+						}
+					}
+					if transfered == false {
+						fmt.Println("Not transfered", endevent)
+						if turn - endevent.time > 10 {
+							currentLocation := locationList[place.start]
+							currentLocation.events = append(currentLocation.events, endevent)
+							locationList[place.start] = currentLocation
+						}
+
+					}
+				}
+			}
+		}
+		turn = turn + 1
 	}
 }
 

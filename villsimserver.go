@@ -44,10 +44,11 @@ type location struct {
 	information int
 	members []string
 	population int
-	frequency float32
+	frequency float64
 	start string
 	end string
 	events []event
+	distance float64
 }
 
 type article struct {
@@ -282,6 +283,11 @@ func gameLoop() {
 					}
 					if transfered == false {
 						fmt.Println("Not transfered", startevent)
+						rotations := turn - startevent.time 
+						rotations = rotations / 4
+						chance := float64(startevent.newsworthiness) * math.Pow(float64(rotations), float64(startevent.newsworthiness)) * place.frequency * float64(locationList[place.end].population) / place.distance / 10000
+						chance += float64(rotations / 2)
+						fmt.Println(chance)
 						if turn - startevent.time > 10 {
 							currentLocation := locationList[place.end]
 							currentLocation.events = append(currentLocation.events, startevent)

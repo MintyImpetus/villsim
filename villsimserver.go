@@ -35,14 +35,24 @@ type player struct {
 	knownLocations []string
 	//When I work on updates, they will be a list of updates. This will be a string, but also with metadata about who told them that, and what group it is about.
 	updates string
+	base string
+	newsFeed []news
 }
 
 type location struct {
 	name string
+	class string
 	information int
 	members []string
 	population int
 	frequency float32
+	start string
+	end string
+}
+
+type news struct {
+	location string
+	content string
 }
 
 type character struct {
@@ -123,13 +133,29 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += strings.TrimSpace(string(dArray[1]))
 		response += `", `
 		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "base" {
+		response += `"output": "`
+		response += locationList[playerList[connId].base].name
+		response += `", `
+		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "news" {
+		response += `"output": [`
+		for index, newsItem := range playerList[connId].newsFeed {
+			response += ` "`
+			response += newsItem.content + `"`
+			if index < len(playerList[connId].newsFeed) - 1{
+				response += ","
+			}
+			response += " "
+		}
+		response += "], "
+		response += `"result": "success"`
 	} else if strings.TrimSpace(string(dArray[0])) == "exit" {
 		fmt.Println("Player " + connId + " has left the game.")
 		response += `"result": "success"`
 		toClose = true
 	} else if strings.TrimSpace(string(dArray[0])) == "list" {
 		response += `"output": [`
-		fmt.Println(playerList[connId].knownLocations)
 		for index, currentLocationId:= range playerList[connId].knownLocations {
 			currentLocation := locationList[currentLocationId]
 			response += ` "`
@@ -158,51 +184,27 @@ func handleConnections(connId string) {
 
 	toClose := false
 
-	//playerList[connId] = new(player)
-
-	villageId := genUUID()
-	locationList[villageId] = location{name: "Random Village", population: 200}
-
-	villageId = genUUID()
-	fmt.Println(villageId)
-	locationList[villageId] = location{name: "Small Town", population: 700}
-	//knownLocations[villageId] = location{name: "Random Village"}
-	/*
-	if entry, ok := myMap["key"]; ok {
-
-       // Then we modify the copy
-        entry.Field = 5
-    
-       // Then we reassign map entry
-        myMap["key"] = entry
-   	}
-	*/
-	//playerList[connId].knownLocations = make(map[string]location)
-
-	//playerList[connId].knownLocations = append(playerList[connId].knownLocations, villageId)
-
 	currentPlayer := playerList[connId]
-	currentPlayer.knownLocations = append(currentPlayer.knownLocations, villageId)
+	for key,_ := range locationList {
+		currentPlayer.knownLocations = append(currentPlayer.knownLocations, key)
+		if locationList[key].class == "hub" {
+			currentPlayer.base = key
+		}
+	}
+
+	currentPlayer.newsFeed = append(currentPlayer.newsFeed, news{content: "Some crazy news"})
+
 	playerList[connId] = currentPlayer
-
-	//knownLocations := make(map[string]location)
-
-	/*
-	playerList[connId].knownLocations[villageId] = location{name: "Random Village 1"}
-	playerList[connId][villageId].members = make(map[string]character)
-	*/
 
 	fmt.Println("Player " + connId + " created")
 
         connList[connId].Write([]byte("Connection accepted, account " + connId + " created.\n"))
-
 
 	
 //Send opening information to the player.
 
         for {
 		//Get what the player wants to do and then send a response.
-		fmt.Println("Loop for input from " + connId)
 		message = ""
 
 		response = ""
@@ -241,7 +243,20 @@ func gameLoop() {
 	}
 }
 
+func GenerateWorld() {
+	village1 := genUUID()
+	locationList[village1] = location{name: "Random Village", class: "hub", population: 200}
+
+	village2 := genUUID()
+	locationList[village2] = location{name: "Small Town", class: "hub", population: 700}
+
+	pathid := genUUID()
+	locationList[pathid] = location{name: "Somewhat popular road", class: "path", frequency: 4, start: village1, end: village2}
+}
+
 func main() {
+	GenerateWorld()
+
         PORT := ":9876"
         dstream, err := net.Listen("tcp", PORT)
         if err != nil {

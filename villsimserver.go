@@ -269,10 +269,10 @@ func handleConnections(connId string) {
         }
 }
 
-func attemptInfoTransfer(theevent event, place location) {
+func attemptInfoTransfer(theevent event, place location, origin string, destination string) {
 	timesince := turn - theevent.time
 	rotations := float64(timesince) / 4
-	chance := float64(theevent.newsworthiness) * math.Pow(rotations, float64(theevent.newsworthiness)) * place.frequency * float64(locationList[place.end].population)
+	chance := float64(theevent.newsworthiness) * math.Pow(rotations, float64(theevent.newsworthiness)) * place.frequency * float64(locationList[destination].population)
 	chance /= place.distance
 	chance /= 100
 	chance += float64(rotations / 2)
@@ -280,8 +280,8 @@ func attemptInfoTransfer(theevent event, place location) {
 	fmt.Println(chance)
 	fmt.Println(randomNumber)
 	if randomNumber < chance {
-		fmt.Println("Event information transfered from", locationList[place.start].name, "to", locationList[place.end].name)
-		currentLocation := locationList[place.end]
+		fmt.Println("Event information transfered from", locationList[origin].name, "to", locationList[destination].name)
+		currentLocation := locationList[destination]
 		currentLocation.events = append(currentLocation.events, theevent)
 		locationList[place.end] = currentLocation
 	}
@@ -302,7 +302,7 @@ func gameLoop() {
 						}
 					}
 					if transfered == false {
-						attemptInfoTransfer(startevent, place)
+						attemptInfoTransfer(startevent, place, place.start, place.end)
 					}
 				}
 			}
@@ -319,7 +319,7 @@ func gameLoop() {
 						}
 					}
 					if transfered == false {
-						attemptInfoTransfer(endevent, place)
+						attemptInfoTransfer(endevent, place, place.end, place.start)
 					}
 				}
 			}

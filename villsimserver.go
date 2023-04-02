@@ -25,6 +25,7 @@ import (
         "strings"
 	"strconv"
 	"math"
+	"math/rand"
 	"time"
 	"github.com/google/uuid"
 //	"encoding/json"
@@ -282,13 +283,17 @@ func gameLoop() {
 						}
 					}
 					if transfered == false {
-						fmt.Println("Not transfered", startevent)
-						rotations := turn - startevent.time 
-						rotations = rotations / 4
-						chance := float64(startevent.newsworthiness) * math.Pow(float64(rotations), float64(startevent.newsworthiness)) * place.frequency * float64(locationList[place.end].population) / place.distance / 10000
+						timesince := turn - startevent.time
+						rotations := float64(timesince) / 4
+						chance := float64(startevent.newsworthiness) * math.Pow(rotations, float64(startevent.newsworthiness)) * place.frequency * float64(locationList[place.end].population)
+						chance /= place.distance
+						chance /= 100
 						chance += float64(rotations / 2)
+						randomNumber := rand.Float64() * 100
 						fmt.Println(chance)
-						if turn - startevent.time > 10 {
+						fmt.Println(randomNumber)
+						if randomNumber < chance {
+							fmt.Println("Event information transfered from", locationList[place.start].name, "to", locationList[place.end].name)
 							currentLocation := locationList[place.end]
 							currentLocation.events = append(currentLocation.events, startevent)
 							locationList[place.end] = currentLocation
@@ -308,7 +313,6 @@ func gameLoop() {
 						}
 					}
 					if transfered == false {
-						fmt.Println("Not transfered", endevent)
 						if turn - endevent.time > 10 {
 							currentLocation := locationList[place.start]
 							currentLocation.events = append(currentLocation.events, endevent)
@@ -345,7 +349,7 @@ func GenerateWorld() {
 	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700}
 
 	pathid := genUUID()
-	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2}
+	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2, distance: 20}
 }
 
 func main() {

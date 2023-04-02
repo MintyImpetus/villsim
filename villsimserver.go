@@ -51,12 +51,15 @@ type location struct {
 }
 
 type article struct {
-	location string
+	title string
 	content string
+	date string
+	id string
 }
 
 type event struct {
 	newsworthiness int
+	title string
 	content string
 	id string
 	time int
@@ -307,6 +310,20 @@ func gameLoop() {
 						}
 
 					}
+				}
+			}
+		}
+		for key, currentPlayer := range playerList {
+			for _, locationevent := range locationList[currentPlayer.base].events {
+				alreadyseen := false
+				for _, currentArticle := range currentPlayer.newsFeed {
+					if currentArticle.id == locationevent.id {
+						alreadyseen = true
+					}
+				}
+				if alreadyseen == false {
+					currentPlayer.newsFeed = append(currentPlayer.newsFeed, article{title: locationevent.title, content: locationevent.content, date: "Add a function to find the time, or something.", id: locationevent.id})
+					playerList[key] = currentPlayer 
 				}
 			}
 		}

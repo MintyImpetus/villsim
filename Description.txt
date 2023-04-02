@@ -1,0 +1,44 @@
+Users can see the recent achievements, and the stats of the other player, as if it is the reputation of their group. Users can also manipulate other people's view of them, by sending out messengers to specific areas, and if they interact with another group, it changes to reflect what the person said.
+
+Make some equation to find the chance they accept the new info, something like the difference between current and new, multiplied by something, multiplied by the charisma level of the messenger, probably added later, to find the percent.
+
+This can combine with the fact that villages or locations can be "subscribed" to, whether through a spy, or raising relationship levels. The level of the spy or relationship dictates the info in the messages.
+Maybe they shouldn't be spies. How about:
+Spies and just normal messengers, scouts or normal workers somehow allied with you, will tell you obvious stuff, like enemies approaching, but maybe more secret stuff, added later could only be accessible by spies.
+
+Average sizes:
+
+Villages:
+Tiny: 100
+small: 500
+medium: 1 - 2 k
+Large: < 10k
+
+Popularity:
+Number of people travelling per turn (four hours)
+Tiny < 1
+Small < 4
+Medium < 10
+large < 50
+
+Td = number of turns since event
+
+Eventfullness = scale
+1 - 3
+Could expand later
+1 boring. New average person
+2 notable. New ship
+3 major. bandits seen
+
+May make it average popularity for people walking through villages in future
+
+May make popularity a measure of the percent of villages population. At the same time this better mimics the fact that the number of people is the chance travellers are told, so I don't know.
+
+Equation is:
+Chance = Eventfullness * Td^Eventfullness * popularity * sizeofothervillage / distance / 10000 + Td / 2
+
+Popularity = average population of the cities / 200
+
+Average walking speed is 2km an hour or 0.5 a turn
+
+Given that popularity isn't a percentage, it makes sense to not care about your village population, as newsworthiness is what effects whether people will spread it, once they are already there.

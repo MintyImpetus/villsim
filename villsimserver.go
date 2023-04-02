@@ -1,5 +1,4 @@
 /*
-
 Doing right now:
 
 TODO:
@@ -24,7 +23,7 @@ import (
         "fmt"
         "net"
         "strings"
-//	"strconv"
+	"strconv"
 	"math"
 	"time"
 	"github.com/google/uuid"
@@ -36,7 +35,7 @@ type player struct {
 	//When I work on updates, they will be a list of updates. This will be a string, but also with metadata about who told them that, and what group it is about.
 	updates string
 	base string
-	newsFeed []news
+	newsFeed []article
 }
 
 type location struct {
@@ -48,10 +47,16 @@ type location struct {
 	frequency float32
 	start string
 	end string
+	events []event
 }
 
-type news struct {
+type article struct {
 	location string
+	content string
+}
+
+type event struct {
+	newsworthiness int
 	content string
 }
 
@@ -125,8 +130,6 @@ func getObjectDistance(startingX float64, startingY float64, x float64, y float6
 func handleActions(connId string, dArray []string) (string, bool) {
 	toClose := false
 	response := "[ { "
-	//Uncomment when referencing the current player's stats is needed.
-	//currentPlayer := playerList[connId]
 	
 	if strings.TrimSpace(string(dArray[0])) == "echo" {
 		response += `"output": "`
@@ -150,6 +153,26 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		}
 		response += "], "
 		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "info" {
+		if len(dArray) > 3 {
+			fmt.Println("Info is get")
+			eventlocation := strings.TrimSpace(string(dArray[1]))
+			eventcontent := strings.TrimSpace(string(dArray[2]))
+			eventnewsworthiness, err := strconv.Atoi(strings.TrimSpace(string(dArray[3])))
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				for key, location := range locationList {
+					if location.name == eventlocation {
+						fmt.Println("Location got", location.name)
+						location.events = append(location.events, event{newsworthiness: eventnewsworthiness, content: eventcontent})
+						locationList[key] = location
+						break
+						fmt.Println("Added news item", location.events, "to", eventlocation)
+					}
+				}
+			}
+		}
 	} else if strings.TrimSpace(string(dArray[0])) == "exit" {
 		fmt.Println("Player " + connId + " has left the game.")
 		response += `"result": "success"`
@@ -158,6 +181,7 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += `"output": [`
 		for index, currentLocationId:= range playerList[connId].knownLocations {
 			currentLocation := locationList[currentLocationId]
+			fmt.Println(currentLocation)
 			response += ` "`
 			response += currentLocation.name + `"`
 			if index < len(playerList[connId].knownLocations) - 1 {
@@ -192,16 +216,13 @@ func handleConnections(connId string) {
 		}
 	}
 
-	currentPlayer.newsFeed = append(currentPlayer.newsFeed, news{content: "Some crazy news"})
+	currentPlayer.newsFeed = append(currentPlayer.newsFeed, article{content: "Some crazy news"})
 
 	playerList[connId] = currentPlayer
 
 	fmt.Println("Player " + connId + " created")
 
         connList[connId].Write([]byte("Connection accepted, account " + connId + " created.\n"))
-
-	
-//Send opening information to the player.
 
         for {
 		//Get what the player wants to do and then send a response.
@@ -245,13 +266,13 @@ func gameLoop() {
 
 func GenerateWorld() {
 	village1 := genUUID()
-	locationList[village1] = location{name: "Random Village", class: "hub", population: 200}
+	locationList[village1] = location{name: "Random-Village", class: "hub", population: 200}
 
 	village2 := genUUID()
-	locationList[village2] = location{name: "Small Town", class: "hub", population: 700}
+	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700}
 
 	pathid := genUUID()
-	locationList[pathid] = location{name: "Somewhat popular road", class: "path", frequency: 4, start: village1, end: village2}
+	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2}
 }
 
 func main() {

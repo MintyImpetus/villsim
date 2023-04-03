@@ -356,13 +356,13 @@ func GenerateWorld() {
 
 func main() {
 	GenerateWorld()
-    PORT := ":9876"
-    dstream, err := net.Listen("tcp", PORT)
-    if err != nil {
-    	fmt.Println(err)
-        return
-    }
-    defer dstream.Close()
+	PORT := ":9876"
+	dstream, err := net.Listen("tcp", PORT)
+	if err != nil {
+ 		fmt.Println(err)
+        	return
+    	}
+	defer dstream.Close()
 	go gameLoop()
 	for {
 		conn, err := dstream.Accept()

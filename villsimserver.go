@@ -22,8 +22,6 @@ import (
 
 type player struct {
 	knownLocations []string
-	//When I work on updates, they will be a list of updates. This will be a string, but also with metadata about who told them that, and what group it is about.
-	updates string
 	base string
 	newsFeed []article
 }

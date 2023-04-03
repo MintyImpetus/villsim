@@ -14,6 +14,8 @@ Whenever the client asks for an update, send them all the actions and how long '
 
 At some point in the future, I could attempt to make all major tasks run through goroutines, as it may speed up the program.
 Increased performance could also be gotten by adding more exit statements to loops.
+
+Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 */
 
 package main
@@ -283,7 +285,8 @@ func attemptInfoTransfer(theevent event, place location, origin string, destinat
 		fmt.Println("Event information transfered from", locationList[origin].name, "to", locationList[destination].name)
 		currentLocation := locationList[destination]
 		currentLocation.events = append(currentLocation.events, theevent)
-		locationList[place.end] = currentLocation
+		locationList[destination] = currentLocation
+		fmt.Println(locationList[destination].events)
 	}
 }
 
@@ -297,7 +300,6 @@ func gameLoop() {
 					for _, endevent := range locationList[place.end].events {
 						if endevent.id == startevent.id {
 							transfered = true
-							fmt.Println("Duplicate found in start to end")
 							break
 						}
 					}
@@ -314,7 +316,6 @@ func gameLoop() {
 					for _, startevent := range locationList[place.start].events {
 						if startevent.id == endevent.id {
 							transfered = true
-							fmt.Println("Duplicate found in end to start")
 							break
 						}
 					}

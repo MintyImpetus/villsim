@@ -2,19 +2,6 @@
 Doing right now:
 
 TODO:
-
-Complete the communication protocol and begin working on the client in pygame.
-	Make it so the message variable is repeatedly updated to include what a player within render distance does, and every time a player updates, send them the response to their previous action, all the actions of visible players and then all visible block data.
-
-
-
-Whenever action is done, run a goroutine function that adds the action to all nearby players list of actions. Have a goroutine running that constantly lowers the tick-till-end number for each of the actions and destroys them when done. 
-
-Whenever the client asks for an update, send them all the actions and how long 'till they end.
-
-At some point in the future, I could attempt to make all major tasks run through goroutines, as it may speed up the program.
-Increased performance could also be gotten by adding more exit statements to loops.
-
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 */
 
@@ -221,11 +208,24 @@ func handleConnections(connId string) {
 
 	toClose := false
 
+	numberOfHubs := 0
+	for _, location := range locationList {
+		if location.class == "hub" {
+			numberOfHubs += 1
+		}
+	}
+
+	randomBase := int(rand.Intn(numberOfHubs))
+
+	i := 0
 	currentPlayer := playerList[connId]
 	for key,_ := range locationList {
 		currentPlayer.knownLocations = append(currentPlayer.knownLocations, key)
 		if locationList[key].class == "hub" {
-			currentPlayer.base = key
+			if i == randomBase {
+				currentPlayer.base = key
+			} 
+			i += 1
 		}
 	}
 
@@ -284,6 +284,7 @@ func attemptInfoTransfer(theevent event, place location, origin string, destinat
 	if randomNumber < chance {
 		fmt.Println("Event information transfered from", locationList[origin].name, "to", locationList[destination].name)
 		currentLocation := locationList[destination]
+		theevent.time = turn
 		currentLocation.events = append(currentLocation.events, theevent)
 		locationList[destination] = currentLocation
 		fmt.Println(locationList[destination].events)
@@ -352,6 +353,18 @@ func GenerateWorld() {
 
 	pathid := genUUID()
 	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2, distance: 20}
+
+	village3 := genUUID()
+	locationList[village3] = location{name: "Far-Away-Town", class: "hub", population: 1000}
+
+	pathid = genUUID()
+	locationList[pathid] = location{name: "More-popular-road", class: "path", frequency: 8, start: village3, end: village1, distance: 30}
+
+	village4 := genUUID()
+	locationList[village4] = location{name: "A-Fork-Village", class: "hub", population: 300}
+
+	pathid = genUUID()
+	locationList[pathid] = location{name: "rainbow-road", class: "path", frequency: 2, start: village4, end: village1, distance: 10}
 }
 
 func main() {

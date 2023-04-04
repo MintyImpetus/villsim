@@ -24,6 +24,8 @@ type player struct {
 	knownLocations []string
 	base string
 	newsFeed []article
+	money int
+	soldiers int
 }
 
 type location struct {

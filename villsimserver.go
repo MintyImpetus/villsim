@@ -34,6 +34,7 @@ type location struct {
 	information int
 	members []string
 	population int
+	averageIncome int
 	frequency float64
 	start string
 	end string
@@ -346,22 +347,22 @@ func gameLoop() {
 
 func GenerateWorld() {
 	village1 := genUUID()
-	locationList[village1] = location{name: "Random-Village", class: "hub", population: 200}
+	locationList[village1] = location{name: "Random-Village", class: "hub", population: 200, averageIncome: 1}
 
 	village2 := genUUID()
-	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700}
+	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700, averageIncome: 1}
 
 	pathid := genUUID()
 	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2, distance: 20}
 
 	village3 := genUUID()
-	locationList[village3] = location{name: "Far-Away-Town", class: "hub", population: 1000}
+	locationList[village3] = location{name: "Far-Away-Town", class: "hub", population: 1000, averageIncome: 1}
 
 	pathid = genUUID()
 	locationList[pathid] = location{name: "More-popular-road", class: "path", frequency: 8, start: village3, end: village1, distance: 30}
 
 	village4 := genUUID()
-	locationList[village4] = location{name: "A-Fork-Village", class: "hub", population: 300}
+	locationList[village4] = location{name: "A-Fork-Village", class: "hub", population: 300, averageIncome: 1}
 
 	pathid = genUUID()
 	locationList[pathid] = location{name: "rainbow-road", class: "path", frequency: 2, start: village4, end: village1, distance: 10}

@@ -35,6 +35,7 @@ type location struct {
 	members []string
 	population int
 	averageIncome int
+	tax int
 	frequency float64
 	start string
 	end string
@@ -138,6 +139,11 @@ func handleActions(connId string, dArray []string) (string, bool) {
 	} else if strings.TrimSpace(string(dArray[0])) == "base" {
 		response += `"output": "`
 		response += locationList[playerList[connId].base].name
+		response += `", `
+		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "income" {
+		response += `"output": "`
+		response += strconv.Itoa(playerList[connId].money)
 		response += `", `
 		response += `"result": "success"`
 	} else if strings.TrimSpace(string(dArray[0])) == "news" {
@@ -341,28 +347,32 @@ func gameLoop() {
 				}
 			}
 		}
+		for key, currentPlayer := range playerList {
+			currentPlayer.money += locationList[currentPlayer.base].population * locationList[currentPlayer.base].averageIncome * locationList[currentPlayer.base].tax / 100
+			playerList[key] = currentPlayer
+		}
 		turn = turn + 1
 	}
 }
 
 func GenerateWorld() {
 	village1 := genUUID()
-	locationList[village1] = location{name: "Random-Village", class: "hub", population: 200, averageIncome: 1}
+	locationList[village1] = location{name: "Random-Village", class: "hub", population: 200, averageIncome: 1, tax: 30}
 
 	village2 := genUUID()
-	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700, averageIncome: 1}
+	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700, averageIncome: 1, tax: 30}
 
 	pathid := genUUID()
 	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2, distance: 20}
 
 	village3 := genUUID()
-	locationList[village3] = location{name: "Far-Away-Town", class: "hub", population: 1000, averageIncome: 1}
+	locationList[village3] = location{name: "Far-Away-Town", class: "hub", population: 1000, averageIncome: 1, tax: 30}
 
 	pathid = genUUID()
 	locationList[pathid] = location{name: "More-popular-road", class: "path", frequency: 8, start: village3, end: village1, distance: 30}
 
 	village4 := genUUID()
-	locationList[village4] = location{name: "A-Fork-Village", class: "hub", population: 300, averageIncome: 1}
+	locationList[village4] = location{name: "A-Fork-Village", class: "hub", population: 300, averageIncome: 1, tax: 30}
 
 	pathid = genUUID()
 	locationList[pathid] = location{name: "rainbow-road", class: "path", frequency: 2, start: village4, end: village1, distance: 10}

@@ -205,7 +205,12 @@ func handleActions(connId string, dArray []string) (string, bool) {
 }
 
 func updateClient(connId string) string {
+	currentPlayer := playerList[connId]
 	response := "{ "
+	response += `"player": { `
+	response += `"base": "` + currentPlayer.base + `", `
+	response += `"money": ` + strconv.Itoa(currentPlayer.money) + ", "
+	response += `"soldiers": ` + strconv.Itoa(currentPlayer.soldiers)
 	response += " }"
 	return response
 }
@@ -270,7 +275,7 @@ func handleConnections(connId string) {
 		updates = updateClient(connId)
 
 		//message = response + actions + renderUpdates + "\n"
-		message = `{ "updates": ` + updates + ", " + `"command": ` + response + " }" + "\n"
+		message = `{ "updates": ` + updates + ", " + `"command": ` + response + " } }" + "\n"
 		connList[connId].Write([]byte(message))
 
 		if toClose {

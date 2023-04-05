@@ -127,7 +127,7 @@ func getObjectDistance(startingX float64, startingY float64, x float64, y float6
 
 func handleActions(connId string, dArray []string) (string, bool) {
 	toClose := false
-	response := "[ { "
+	response := "{ "
 
 	if strings.TrimSpace(string(dArray[0])) == "echo" {
 		response += `"output": "`
@@ -200,8 +200,14 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		fmt.Println("Command " + strings.TrimSpace(string(dArray[0])) + " not recognised from player " + connId)
 		response += `"result": "invalid"`
 	}
-	response = response + " } ] "
+	response = response + " }"
 	return response, toClose
+}
+
+func updateClient(connId string) string {
+	response := "{ "
+	response += " }"
+	return response
 }
 
 func handleConnections(connId string) {
@@ -209,6 +215,7 @@ func handleConnections(connId string) {
 	var message string
 
 	var response string
+	var updates string
 	//var renderUpdates string
 
 	toClose := false
@@ -239,7 +246,6 @@ func handleConnections(connId string) {
 	playerList[connId] = currentPlayer
 
 	fmt.Println("Player " + connId + " created")
-
 	connList[connId].Write([]byte("Connection accepted, account " + connId + " created.\n"))
 
 	for {
@@ -247,7 +253,7 @@ func handleConnections(connId string) {
 		message = ""
 
 		response = ""
-		//renderUpdates = ""
+		updates = ""
 
 		data, err := bufio.NewReader(connList[connId]).ReadString('\n')
 		if err != nil {
@@ -260,11 +266,11 @@ func handleConnections(connId string) {
 		/*
 			actions := getActions(connId)
 
-			renderUpdates = updateClient(connId)
 		*/
+		updates = updateClient(connId)
 
 		//message = response + actions + renderUpdates + "\n"
-		message = response + "\n"
+		message = `{ "updates": ` + updates + ", " + `"command": ` + response + " }" + "\n"
 		connList[connId].Write([]byte(message))
 
 		if toClose {

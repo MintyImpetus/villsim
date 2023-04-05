@@ -8,61 +8,61 @@ Multithread the math done by attemptInfoTransfer to speed up gane loop (not impo
 package main
 
 import (
-        "bufio"
-        "fmt"
-        "net"
-        "strings"
-	"strconv"
+	"bufio"
+	"fmt"
+	"github.com/google/uuid"
 	"math"
 	"math/rand"
+	"net"
+	"strconv"
+	"strings"
 	"time"
-	"github.com/google/uuid"
-//	"encoding/json"
+	// "encoding/json"
 )
 
 type player struct {
 	knownLocations []string
-	base string
-	newsFeed []article
-	money int
-	soldiers int
+	base           string
+	newsFeed       []article
+	money          int
+	soldiers       int
 }
 
 type location struct {
-	name string
-	class string
-	information int
-	members []string
-	population int
+	name          string
+	class         string
+	information   int
+	members       []string
+	population    int
 	averageIncome int
-	tax int
-	frequency float64
-	start string
-	end string
-	events []event
-	distance float64
+	tax           int
+	frequency     float64
+	start         string
+	end           string
+	events        []event
+	distance      float64
 }
 
 type article struct {
-	title string
+	title   string
 	content string
-	date string
-	id string
+	date    string
+	id      string
 }
 
 type event struct {
 	newsworthiness int
-	title string
-	content string
-	id string
-	time int
+	title          string
+	content        string
+	id             string
+	time           int
 }
 
 type character struct {
 	//Name and health will not be implemented for a bit, while this game is still an information transfer simulator, and does not have any real characters.
-	name string
+	name   string
 	health int
-	class string
+	class  string
 	//Currently, characters are just located wherever their struct is held, but maybe in the future I can add the ability for them to be in transit between areas.
 	//This probably doesn't need to be a coardinate, as a information game, you should be unaware of their location until they interact with someone. The location can be an estimate done on the client side.
 
@@ -70,7 +70,7 @@ type character struct {
 }
 
 type action struct {
-	name string
+	name     string
 	duration int
 }
 
@@ -88,8 +88,8 @@ func deleteElement(list []string, i int) []string {
 
 }
 
-func inRangeOfNumbers( query float64, low float64, high float64) bool {
-	if (query >= low && query <= high) {
+func inRangeOfNumbers(query float64, low float64, high float64) bool {
+	if query >= low && query <= high {
 		return true
 	} else {
 		return false
@@ -104,7 +104,6 @@ func getDifference(a int, b int) int {
 	}
 }
 
-
 func getDifferenceFloat64(a float64, b float64) float64 {
 	if a > b {
 		return a - b
@@ -112,7 +111,6 @@ func getDifferenceFloat64(a float64, b float64) float64 {
 		return b - a
 	}
 }
-
 
 func genUUID() string {
 	id := uuid.New()
@@ -130,7 +128,7 @@ func getObjectDistance(startingX float64, startingY float64, x float64, y float6
 func handleActions(connId string, dArray []string) (string, bool) {
 	toClose := false
 	response := "[ { "
-	
+
 	if strings.TrimSpace(string(dArray[0])) == "echo" {
 		response += `"output": "`
 		response += strings.TrimSpace(string(dArray[1]))
@@ -151,7 +149,7 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		for index, newsItem := range playerList[connId].newsFeed {
 			response += ` "`
 			response += newsItem.content + `"`
-			if index < len(playerList[connId].newsFeed) - 1{
+			if index < len(playerList[connId].newsFeed)-1 {
 				response += ","
 			}
 			response += " "
@@ -186,12 +184,12 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		toClose = true
 	} else if strings.TrimSpace(string(dArray[0])) == "list" {
 		response += `"output": [`
-		for index, currentLocationId:= range playerList[connId].knownLocations {
+		for index, currentLocationId := range playerList[connId].knownLocations {
 			currentLocation := locationList[currentLocationId]
 			fmt.Println(currentLocation)
 			response += ` "`
 			response += currentLocation.name + `"`
-			if index < len(playerList[connId].knownLocations) - 1 {
+			if index < len(playerList[connId].knownLocations)-1 {
 				response += ","
 			}
 			response += " "
@@ -226,12 +224,12 @@ func handleConnections(connId string) {
 
 	i := 0
 	currentPlayer := playerList[connId]
-	for key,_ := range locationList {
+	for key, _ := range locationList {
 		currentPlayer.knownLocations = append(currentPlayer.knownLocations, key)
 		if locationList[key].class == "hub" {
 			if i == randomBase {
 				currentPlayer.base = key
-			} 
+			}
 			i += 1
 		}
 	}
@@ -242,32 +240,32 @@ func handleConnections(connId string) {
 
 	fmt.Println("Player " + connId + " created")
 
-        connList[connId].Write([]byte("Connection accepted, account " + connId + " created.\n"))
+	connList[connId].Write([]byte("Connection accepted, account " + connId + " created.\n"))
 
-        for {
+	for {
 		//Get what the player wants to do and then send a response.
 		message = ""
 
 		response = ""
 		//renderUpdates = ""
 
-                data, err := bufio.NewReader(connList[connId]).ReadString('\n')
-                if err != nil {
-                        fmt.Println(err)
-                        return
-                }
+		data, err := bufio.NewReader(connList[connId]).ReadString('\n')
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		dArray := strings.Split(data, " ")
 		response, toClose = handleActions(connId, dArray)
-		
-		/*
-		actions := getActions(connId)
 
-		renderUpdates = updateClient(connId)
+		/*
+			actions := getActions(connId)
+
+			renderUpdates = updateClient(connId)
 		*/
-		
+
 		//message = response + actions + renderUpdates + "\n"
 		message = response + "\n"
-                connList[connId].Write([]byte(message))
+		connList[connId].Write([]byte(message))
 
 		if toClose {
 			connList[connId].Close()
@@ -275,7 +273,7 @@ func handleConnections(connId string) {
 			delete(playerList, connId)
 			return
 		}
-        }
+	}
 }
 
 func attemptInfoTransfer(theevent event, place location, origin string, destination string) {
@@ -343,7 +341,7 @@ func gameLoop() {
 				}
 				if alreadyseen == false {
 					currentPlayer.newsFeed = append(currentPlayer.newsFeed, article{title: locationevent.title, content: locationevent.content, date: "Add a function to find the time, or something.", id: locationevent.id})
-					playerList[key] = currentPlayer 
+					playerList[key] = currentPlayer
 				}
 			}
 		}
@@ -383,16 +381,16 @@ func main() {
 	PORT := ":9876"
 	dstream, err := net.Listen("tcp", PORT)
 	if err != nil {
- 		fmt.Println(err)
-        	return
-    	}
+		fmt.Println(err)
+		return
+	}
 	defer dstream.Close()
 	go gameLoop()
 	for {
 		conn, err := dstream.Accept()
 		if err != nil {
 			fmt.Println(err)
-                continue
+			continue
 		} else {
 			fmt.Println("Connection received")
 			connId := genUUID()

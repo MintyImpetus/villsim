@@ -25,7 +25,6 @@ type player struct {
 	base           string
 	newsFeed       []article
 	money          int
-	soldiers       int
 }
 
 type location struct {
@@ -212,7 +211,6 @@ func updateClient(connId string) string {
 	response += `"player": { `
 	response += `"base": "` + locationList[currentPlayer.base].name + `", `
 	response += `"money": ` + strconv.Itoa(currentPlayer.money) + ", "
-	response += `"soldiers": ` + strconv.Itoa(currentPlayer.soldiers)
 	response += " } "
 	response += "}"
 	return response

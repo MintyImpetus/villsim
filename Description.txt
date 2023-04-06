@@ -42,3 +42,8 @@ Popularity = average population of the cities / 200
 Average walking speed is 2km an hour or 0.5 a turn
 
 Given that popularity isn't a percentage, it makes sense to not care about your village population, as newsworthiness is what effects whether people will spread it, once they are already there.
+
+Soldiers: The Next Step.
+Add the ability to buy barracks, that produce soldiers. Make it so you can send them to attack a village, hopefully win. Make it so you now control that village. Make it so you can somehow switch bases. Make it so the opponent can attack a base.
+General:
+Make it so you can just place soldiers on a village, defending from enemies, but not actually attacking, or have them attack.

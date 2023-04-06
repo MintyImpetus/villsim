@@ -129,7 +129,9 @@ func handleActions(connId string, dArray []string) (string, bool) {
 	toClose := false
 	response := "{ "
 
-	if strings.TrimSpace(string(dArray[0])) == "echo" {
+	if strings.TrimSpace(string(dArray[0])) == "" {
+		response += `"result": "empty"`
+	} else if strings.TrimSpace(string(dArray[0])) == "echo" {
 		response += `"output": "`
 		response += strings.TrimSpace(string(dArray[1]))
 		response += `", `
@@ -208,10 +210,11 @@ func updateClient(connId string) string {
 	currentPlayer := playerList[connId]
 	response := "{ "
 	response += `"player": { `
-	response += `"base": "` + currentPlayer.base + `", `
+	response += `"base": "` + locationList[currentPlayer.base].name + `", `
 	response += `"money": ` + strconv.Itoa(currentPlayer.money) + ", "
 	response += `"soldiers": ` + strconv.Itoa(currentPlayer.soldiers)
-	response += " }"
+	response += " } "
+	response += "}"
 	return response
 }
 
@@ -275,7 +278,7 @@ func handleConnections(connId string) {
 		updates = updateClient(connId)
 
 		//message = response + actions + renderUpdates + "\n"
-		message = `{ "updates": ` + updates + ", " + `"command": ` + response + " } }" + "\n"
+		message = `{ "updates": ` + updates + ", " + `"command": ` + response + "  }" + "\n"
 		connList[connId].Write([]byte(message))
 
 		if toClose {

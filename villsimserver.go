@@ -294,10 +294,10 @@ func attemptInfoTransfer(theevent event, place location, origin string, destinat
 	chance /= place.distance
 	chance /= 100
 	chance += float64(rotations / 2)
-	randomNumber := rand.Float64() * 100
+	randomNumber := rand.Intn(int(chance) + 70)
 	fmt.Println(chance)
 	fmt.Println(randomNumber)
-	if randomNumber < chance {
+	if float64(randomNumber) < chance {
 		fmt.Println("Event information transfered from", locationList[origin].name, "to", locationList[destination].name)
 		currentLocation := locationList[destination]
 		theevent.time = turn

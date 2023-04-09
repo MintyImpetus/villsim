@@ -1,7 +1,7 @@
 /*
 Doing right now:
 
-TODO:
+Todo:
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 */
 

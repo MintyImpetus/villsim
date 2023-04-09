@@ -3,6 +3,9 @@ Doing right now:
 
 Todo:
 Make sure players are actually deleted.
+
+Make soldiers appear, and do stuff.
+
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 */
 

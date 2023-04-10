@@ -2,8 +2,6 @@
 Doing right now:
 
 Todo:
-Make sure players are actually deleted.
-
 Make soldiers appear, and do stuff.
 
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
@@ -144,6 +142,16 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += locationList[playerList[connId].base].name
 		response += `", `
 		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "barac" {
+		successful := true
+		response += `"output": "`
+		response += strings.TrimSpace(string(dArray[1]))
+		response += `", `
+		if successful == true {
+			response += `"result": "success"`
+		} else {
+			response += `"result": "fail"`
+		}
 	} else if strings.TrimSpace(string(dArray[0])) == "income" {
 		response += `"output": "`
 		response += strconv.Itoa(playerList[connId].money)

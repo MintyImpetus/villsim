@@ -29,7 +29,6 @@ type player struct {
 	base           string
 	newsFeed       []article
 	money          int
-	baracks        map[string]int
 }
 
 type location struct {
@@ -45,6 +44,8 @@ type location struct {
 	end           string
 	events        []event
 	distance      float64
+	baracks       map[string]int
+	soldiers      map[string]int
 }
 
 type article struct {
@@ -163,7 +164,7 @@ func handleActions(connId string, dArray []string) (string, bool) {
 			response += "no such location"
 		} else {
 			if currentPlayer.money > 99 {
-				currentPlayer.baracks[getLocationId(strings.TrimSpace(string(dArray[1])))] += 1
+				//currentPlayer.baracks[getLocationId(strings.TrimSpace(string(dArray[1])))] += 1
 			} else {
 				successful = false
 			}
@@ -195,7 +196,6 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += `"result": "success"`
 	} else if strings.TrimSpace(string(dArray[0])) == "info" {
 		if len(dArray) > 3 {
-			fmt.Println("Info is get")
 			eventlocation := strings.TrimSpace(string(dArray[1]))
 			eventcontent := strings.TrimSpace(string(dArray[2]))
 			eventnewsworthiness, err := strconv.Atoi(strings.TrimSpace(string(dArray[3])))
@@ -204,7 +204,6 @@ func handleActions(connId string, dArray []string) (string, bool) {
 			} else {
 				for key, location := range locationList {
 					if location.name == eventlocation {
-						fmt.Println("Location got", location.name)
 						infoId := genUUID()
 						currentEvent := event{newsworthiness: eventnewsworthiness, content: eventcontent, id: infoId, time: turn}
 						location.events = append(location.events, currentEvent)
@@ -282,8 +281,6 @@ func handleConnections(connId string) {
 			i += 1
 		}
 	}
-
-	currentPlayer.baracks = make(map[string]int)
 
 	currentPlayer.newsFeed = append(currentPlayer.newsFeed, article{content: "Some crazy news"})
 
@@ -399,6 +396,14 @@ func gameLoop() {
 			currentPlayer.money += locationList[currentPlayer.base].population * locationList[currentPlayer.base].averageIncome * locationList[currentPlayer.base].tax / 100
 			playerList[key] = currentPlayer
 		}
+		for key, currentLocation := range locationList {
+			for key, barackNumber := range currentLocation.baracks {
+				if barackNumber > 0 {
+					currentLocation.soldiers[key] = barackNumber * currentLocation.population / 100
+				}
+			}
+			locationList[key] = currentLocation
+		}
 		turn = turn + 1
 	}
 }
@@ -406,21 +411,37 @@ func gameLoop() {
 func GenerateWorld() {
 	village1 := genUUID()
 	locationList[village1] = location{name: "Random-Village", class: "hub", population: 200, averageIncome: 1, tax: 30}
+	currentLocation := locationList[village1]
+	currentLocation.baracks = make(map[string]int)
+	currentLocation.soldiers = make(map[string]int)
+	locationList[village1] = currentLocation
 
 	village2 := genUUID()
 	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700, averageIncome: 1, tax: 30}
+	currentLocation = locationList[village2]
+	currentLocation.baracks = make(map[string]int)
+	currentLocation.soldiers = make(map[string]int)
+	locationList[village2] = currentLocation
 
 	pathid := genUUID()
 	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2, distance: 20}
 
 	village3 := genUUID()
 	locationList[village3] = location{name: "Far-Away-Town", class: "hub", population: 1000, averageIncome: 1, tax: 30}
+	currentLocation = locationList[village3]
+	currentLocation.baracks = make(map[string]int)
+	currentLocation.soldiers = make(map[string]int)
+	locationList[village3] = currentLocation
 
 	pathid = genUUID()
 	locationList[pathid] = location{name: "More-popular-road", class: "path", frequency: 8, start: village3, end: village1, distance: 30}
 
 	village4 := genUUID()
 	locationList[village4] = location{name: "A-Fork-Village", class: "hub", population: 300, averageIncome: 1, tax: 30}
+	currentLocation = locationList[village4]
+	currentLocation.baracks = make(map[string]int)
+	currentLocation.soldiers = make(map[string]int)
+	locationList[village4] = currentLocation
 
 	pathid = genUUID()
 	locationList[pathid] = location{name: "rainbow-road", class: "path", frequency: 2, start: village4, end: village1, distance: 10}

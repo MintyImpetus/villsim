@@ -4,6 +4,8 @@ Doing right now:
 Todo:
 Make soldiers appear, and do stuff.
 
+Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
+
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 */
 
@@ -27,6 +29,7 @@ type player struct {
 	base           string
 	newsFeed       []article
 	money          int
+	baracks        map[string]int
 }
 
 type location struct {
@@ -89,6 +92,15 @@ func deleteElement(list []string, i int) []string {
 
 }
 
+func getLocationId(name string) string {
+	for key, currentLocation := range locationList {
+		if currentLocation.name == name {
+			return key
+		}
+	}
+	return ""
+}
+
 func inRangeOfNumbers(query float64, low float64, high float64) bool {
 	if query >= low && query <= high {
 		return true
@@ -142,10 +154,22 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += locationList[playerList[connId].base].name
 		response += `", `
 		response += `"result": "success"`
-	} else if strings.TrimSpace(string(dArray[0])) == "barac" {
+	} else if strings.TrimSpace(string(dArray[0])) == "barack" {
 		successful := true
 		response += `"output": "`
-		response += strings.TrimSpace(string(dArray[1]))
+		currentPlayer := playerList[connId]
+		if getLocationId(strings.TrimSpace(string(dArray[1]))) == "" {
+			successful = false
+			response += "no such location"
+		} else {
+			if currentPlayer.money > 99 {
+				currentPlayer.baracks[getLocationId(strings.TrimSpace(string(dArray[1])))] += 1
+			} else {
+				successful = false
+			}
+		}
+		playerList[connId] = currentPlayer
+		response += ": " + strings.TrimSpace(string(dArray[1]))
 		response += `", `
 		if successful == true {
 			response += `"result": "success"`
@@ -258,6 +282,8 @@ func handleConnections(connId string) {
 			i += 1
 		}
 	}
+
+	currentPlayer.baracks = make(map[string]int)
 
 	currentPlayer.newsFeed = append(currentPlayer.newsFeed, article{content: "Some crazy news"})
 
@@ -401,9 +427,12 @@ func GenerateWorld() {
 }
 
 func main() {
+	fmt.Println("Generating world...")
 	GenerateWorld()
+	fmt.Println("Finished generating world")
 	PORT := ":9876"
 	dstream, err := net.Listen("tcp", PORT)
+	fmt.Println("Started listener on port", PORT)
 	if err != nil {
 		fmt.Println(err)
 		return

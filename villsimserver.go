@@ -2,8 +2,6 @@
 Doing right now:
 
 Todo:
-Add time to update, and make a pick a turn to day ratio
-
 Make soldiers appear, and do stuff.
 
 Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
@@ -92,7 +90,6 @@ var turn int = 1
 
 func deleteElement(list []string, i int) []string {
 	return append(list[:i], list[i+1:]...)
-
 }
 
 func getLocationId(name string) string {
@@ -120,25 +117,9 @@ func getDifference(a int, b int) int {
 	}
 }
 
-func getDifferenceFloat64(a float64, b float64) float64 {
-	if a > b {
-		return a - b
-	} else {
-		return b - a
-	}
-}
-
 func genUUID() string {
 	id := uuid.New()
 	return id.String()
-}
-
-func getObjectDistance(startingX float64, startingY float64, x float64, y float64) float64 {
-	distanceX := getDifferenceFloat64(startingX, x)
-	distanceY := getDifferenceFloat64(startingY, y)
-	distance := math.Sqrt(math.Pow(float64(distanceX), 2) + math.Pow(float64(distanceY), 2))
-	return distance
-
 }
 
 func getDaySinceGenesis() string {
@@ -420,7 +401,7 @@ func gameLoop() {
 	}
 }
 
-func IndexLocation(name string, class string, population int, frequency int, averageIncome int, tax int, start string, end string, distance int) {
+func indexLocation(name string, class string, population int, frequency int, averageIncome int, tax int, start string, end string, distance int) {
 	locationId := genUUID()
 	if name == "" {
 		name = "Unamed-Village"
@@ -447,13 +428,13 @@ func IndexLocation(name string, class string, population int, frequency int, ave
 	locationList[locationId] = currentLocation
 }
 
-func GenerateWorld() {
-	IndexLocation("Random-Village", "hub", 200, 0, 1, 30, "", "", 0)
-	IndexLocation("Small-Town", "hub", 700, 0, 1, 30, "", "", 0)
-	IndexLocation("Somewhat-popular-road", "path", 0, 4, 1, 30, getLocationId("Random-Village"), getLocationId("Small-Town"), 20)
-	IndexLocation("Far-Away-Town", "hub", 1000, 0, 3, 20, "", "", 0)
-	IndexLocation("More-popular-road", "path", 0, 8, 0, 0, getLocationId("Far-Away-Town"), getLocationId("Random-Village"), 30)
-	IndexLocation("A-Fork-Village", "hub", 300, 0, 1, 30, "", "", 0)
+func generateWorld() {
+	indexLocation("Random-Village", "hub", 200, 0, 1, 30, "", "", 0)
+	indexLocation("Small-Town", "hub", 700, 0, 1, 30, "", "", 0)
+	indexLocation("Somewhat-popular-road", "path", 0, 4, 1, 30, getLocationId("Random-Village"), getLocationId("Small-Town"), 20)
+	indexLocation("Far-Away-Town", "hub", 1000, 0, 3, 20, "", "", 0)
+	indexLocation("More-popular-road", "path", 0, 8, 0, 0, getLocationId("Far-Away-Town"), getLocationId("Random-Village"), 30)
+	indexLocation("A-Fork-Village", "hub", 300, 0, 1, 30, "", "", 0)
 }
 
 func main() {

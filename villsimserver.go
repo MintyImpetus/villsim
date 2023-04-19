@@ -408,43 +408,40 @@ func gameLoop() {
 	}
 }
 
+func IndexLocation(name string, class string, population int, frequency int, averageIncome int, tax int, start string, end string, distance int) {
+	locationId := genUUID()
+	if name == "" {
+		name = "Unamed-Village"
+	}
+	if class == "" {
+		class = "hub"
+	}
+	if class != "path" {
+		if population == 0 {
+			fmt.Println("Village", name, "created without population")
+		}
+		if averageIncome == 0 {
+			fmt.Println("Village", name, "created without average income")
+		}
+		if tax == 0 {
+			fmt.Println("Village", name, "created without tax")
+		}
+	}
+	locationList[locationId] = location{name: name, class: class, population: population, averageIncome: averageIncome, tax: tax, start: start, end: end}
+	
+	currentLocation := locationList[locationId]
+	currentLocation.baracks = make(map[string]int)
+	currentLocation.soldiers = make(map[string]int)
+	locationList[locationId] = currentLocation
+}
+
 func GenerateWorld() {
-	village1 := genUUID()
-	locationList[village1] = location{name: "Random-Village", class: "hub", population: 200, averageIncome: 1, tax: 30}
-	currentLocation := locationList[village1]
-	currentLocation.baracks = make(map[string]int)
-	currentLocation.soldiers = make(map[string]int)
-	locationList[village1] = currentLocation
-
-	village2 := genUUID()
-	locationList[village2] = location{name: "Small-Town", class: "hub", population: 700, averageIncome: 1, tax: 30}
-	currentLocation = locationList[village2]
-	currentLocation.baracks = make(map[string]int)
-	currentLocation.soldiers = make(map[string]int)
-	locationList[village2] = currentLocation
-
-	pathid := genUUID()
-	locationList[pathid] = location{name: "Somewhat-popular-road", class: "path", frequency: 4, start: village1, end: village2, distance: 20}
-
-	village3 := genUUID()
-	locationList[village3] = location{name: "Far-Away-Town", class: "hub", population: 1000, averageIncome: 1, tax: 30}
-	currentLocation = locationList[village3]
-	currentLocation.baracks = make(map[string]int)
-	currentLocation.soldiers = make(map[string]int)
-	locationList[village3] = currentLocation
-
-	pathid = genUUID()
-	locationList[pathid] = location{name: "More-popular-road", class: "path", frequency: 8, start: village3, end: village1, distance: 30}
-
-	village4 := genUUID()
-	locationList[village4] = location{name: "A-Fork-Village", class: "hub", population: 300, averageIncome: 1, tax: 30}
-	currentLocation = locationList[village4]
-	currentLocation.baracks = make(map[string]int)
-	currentLocation.soldiers = make(map[string]int)
-	locationList[village4] = currentLocation
-
-	pathid = genUUID()
-	locationList[pathid] = location{name: "rainbow-road", class: "path", frequency: 2, start: village4, end: village1, distance: 10}
+	IndexLocation("Random-Village", "hub", 200, 0, 1, 30, "", "", 0)
+	IndexLocation("Small-Town", "hub", 700, 0, 1, 30, "", "", 0)
+	IndexLocation("Somewhat-popular-road", "path", 0, 4, 1, 30, getLocationId("Random-Village"), getLocationId("Small-Town"), 20)
+	IndexLocation("Far-Away-Town", "hub", 1000, 0, 3, 20, "", "", 0)
+	IndexLocation("More-popular-road", "path", 0, 8, 0, 0, getLocationId("Far-Away-Town"), getLocationId("Random-Village"), 30)
+	IndexLocation("A-Fork-Village", "hub", 300, 0, 1, 30, "", "", 0)
 }
 
 func main() {

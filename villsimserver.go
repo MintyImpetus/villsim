@@ -2,6 +2,8 @@
 Doing right now:
 
 Todo:
+Add time to update, and make a pick a turn to day ratio
+
 Make soldiers appear, and do stuff.
 
 Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
@@ -139,6 +141,17 @@ func getObjectDistance(startingX float64, startingY float64, x float64, y float6
 
 }
 
+func getDaySinceGenesis() string {
+	day := int(math.Floor(float64(turn) / 3600))
+	hour := int(math.Floor(math.Mod(float64(turn), 3600)) / 150)
+	/*
+	fmt.Println(turn, "turn")
+	fmt.Println(math.Remainder(float64(turn), 3600), "Math.Remainder")
+	fmt.Println(math.Floor(math.Remainder(float64(turn), 3600)), "Math.floor")
+	*/
+	return strconv.Itoa(day) + "-" + strconv.Itoa(hour)
+}
+
 func handleActions(connId string, dArray []string) (string, bool) {
 	toClose := false
 	response := "{ "
@@ -242,12 +255,11 @@ func handleActions(connId string, dArray []string) (string, bool) {
 
 func updateClient(connId string) string {
 	currentPlayer := playerList[connId]
-	response := "{ "
-	response += `"player": { `
+	response := `"player": { `
 	response += `"base": "` + locationList[currentPlayer.base].name + `", `
-	response += `"money": ` + strconv.Itoa(currentPlayer.money) + ", "
-	response += " } "
-	response += "}"
+	response += `"money": ` + strconv.Itoa(currentPlayer.money) + " "
+	response += "}, "
+	response += `"time": "` + getDaySinceGenesis() + `" `
 	return response
 }
 
@@ -311,7 +323,7 @@ func handleConnections(connId string) {
 		updates = updateClient(connId)
 
 		//message = response + actions + renderUpdates + "\n"
-		message = `{ "updates": ` + updates + ", " + `"command": ` + response + "  }" + "\n"
+		message = `{ "updates": { ` + updates + "}, " + `"command": ` + response + " }" + "\n"
 		connList[connId].Write([]byte(message))
 
 		if toClose {
@@ -404,7 +416,7 @@ func gameLoop() {
 			}
 			locationList[key] = currentLocation
 		}
-		turn = turn + 1
+		turn = turn + 100
 	}
 }
 

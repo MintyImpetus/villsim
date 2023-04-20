@@ -371,7 +371,7 @@ func gameLoop() {
 			}
 		}
 		for key, currentPlayer := range playerList {
-			currentPlayer.money += locationList[currentPlayer.base].population * locationList[currentPlayer.base].averageIncome * locationList[currentPlayer.base].tax / 100
+			currentPlayer.money += locationList[currentPlayer.base].population * locationList[currentPlayer.base].averageIncome * locationList[currentPlayer.base].tax / 100 / 10
 			playerList[key] = currentPlayer
 		}
 		for key, currentLocation := range locationList {

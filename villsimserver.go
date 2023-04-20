@@ -381,7 +381,7 @@ func gameLoop() {
 			}
 			locationList[key] = currentLocation
 		}
-		turn = turn + 100
+		turn = turn + 1
 	}
 }
 

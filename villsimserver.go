@@ -129,6 +129,11 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += locationList[playerList[connId].base].name
 		response += `", `
 		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "time" {
+		response += `"output": "`
+		response += getDaySinceGenesis()
+		response += `", `
+		response += `"result": "success"`
 	} else if strings.TrimSpace(string(dArray[0])) == "barack" {
 		successful := true
 		response += `"output": "`
@@ -149,7 +154,7 @@ func handleActions(connId string, dArray []string) (string, bool) {
 			}
 		}
 		playerList[connId] = currentPlayer
-		response += ": " + strings.TrimSpace(string(dArray[1]))
+		response += strings.TrimSpace(string(dArray[1]))
 		response += `", `
 		if successful == true {
 			response += `"result": "success"`
@@ -225,7 +230,7 @@ func updateClient(connId string) string {
 	response += `"base": "` + locationList[currentPlayer.base].name + `", `
 	response += `"money": ` + strconv.Itoa(currentPlayer.money) + " "
 	response += "}, "
-	response += `"time": "` + getDaySinceGenesis() + `" `
+	response += `"time": "` + strconv.Itoa(turn) + `" `
 	return response
 }
 
@@ -253,6 +258,7 @@ func handleConnections(connId string) {
 	for key, _ := range locationList {
 		currentPlayer.knownLocations = append(currentPlayer.knownLocations, key)
 		if locationList[key].class == "hub" {
+	*/
 			if i == randomBase {
 				currentPlayer.base = key
 			}

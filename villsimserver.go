@@ -110,11 +110,6 @@ func genUUID() string {
 func getDaySinceGenesis() string {
 	day := int(math.Floor(float64(turn) / 120))
 	hour := int(math.Floor(math.Mod(float64(turn), 120)) / 5)
-	/*
-	fmt.Println(turn, "turn")
-	fmt.Println(math.Remainder(float64(turn), 3600), "Math.Remainder")
-	fmt.Println(math.Floor(math.Remainder(float64(turn), 3600)), "Math.floor")
-	*/
 	return strconv.Itoa(day) + "-" + strconv.Itoa(hour)
 }
 

@@ -258,7 +258,6 @@ func handleConnections(connId string) {
 	for key, _ := range locationList {
 		currentPlayer.knownLocations = append(currentPlayer.knownLocations, key)
 		if locationList[key].class == "hub" {
-	*/
 			if i == randomBase {
 				currentPlayer.base = key
 			}

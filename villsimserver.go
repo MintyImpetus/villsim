@@ -4,6 +4,8 @@ Doing right now:
 Todo:
 Make soldiers appear, and do stuff.
 
+Add time to the soldiers and baracks. Eg, make it take time to build the baracks and hear back if they were successful.
+
 Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
 
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
@@ -106,8 +108,8 @@ func genUUID() string {
 }
 
 func getDaySinceGenesis() string {
-	day := int(math.Floor(float64(turn) / 3600))
-	hour := int(math.Floor(math.Mod(float64(turn), 3600)) / 150)
+	day := int(math.Floor(float64(turn) / 120))
+	hour := int(math.Floor(math.Mod(float64(turn), 120)) / 5)
 	/*
 	fmt.Println(turn, "turn")
 	fmt.Println(math.Remainder(float64(turn), 3600), "Math.Remainder")
@@ -136,12 +138,17 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		successful := true
 		response += `"output": "`
 		currentPlayer := playerList[connId]
+		currentLocationId := getLocationId(strings.TrimSpace(string(dArray[1])))
 		if getLocationId(strings.TrimSpace(string(dArray[1]))) == "" {
 			successful = false
 			response += "no such location"
 		} else {
 			if currentPlayer.money > 99 {
 				//currentPlayer.baracks[getLocationId(strings.TrimSpace(string(dArray[1])))] += 1
+				currentLocation := locationList[currentLocationId]
+				currentLocation.baracks[connId] += 1
+				locationList[currentLocationId] = currentLocation
+				currentPlayer.money -= 99
 			} else {
 				successful = false
 			}

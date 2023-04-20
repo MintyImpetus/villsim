@@ -439,7 +439,7 @@ func generateWorld() {
 
 func main() {
 	fmt.Println("Generating world...")
-	GenerateWorld()
+	generateWorld()
 	fmt.Println("Finished generating world")
 	PORT := ":9876"
 	dstream, err := net.Listen("tcp", PORT)

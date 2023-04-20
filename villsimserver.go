@@ -63,25 +63,8 @@ type event struct {
 	time           int
 }
 
-type character struct {
-	//Name and health will not be implemented for a bit, while this game is still an information transfer simulator, and does not have any real characters.
-	name   string
-	health int
-	class  string
-	//Currently, characters are just located wherever their struct is held, but maybe in the future I can add the ability for them to be in transit between areas.
-	//This probably doesn't need to be a coardinate, as a information game, you should be unaware of their location until they interact with someone. The location can be an estimate done on the client side.
-
-	//I do not think these characters need an "id." Having a uuid for their location in a map should be enough.
-}
-
-type action struct {
-	name     string
-	duration int
-}
-
 var playerList = make(map[string]player)
 var locationList = make(map[string]location)
-var characterList = make(map[string]character)
 var connList = make(map[string]net.Conn)
 
 var increment float64 = 0.01
@@ -297,13 +280,8 @@ func handleConnections(connId string) {
 		dArray := strings.Split(data, " ")
 		response, toClose = handleActions(connId, dArray)
 
-		/*
-			actions := getActions(connId)
-
-		*/
 		updates = updateClient(connId)
 
-		//message = response + actions + renderUpdates + "\n"
 		message = `{ "updates": { ` + updates + "}, " + `"command": ` + response + " }" + "\n"
 		connList[connId].Write([]byte(message))
 

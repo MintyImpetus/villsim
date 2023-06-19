@@ -1,3 +1,9 @@
+# An Outline Of What Is To Come
+
+This is not a organized list of planned features, just some ideas I wrote down at one point.
+
+## Planned Features
+
 Users can see the recent achievements, and the stats of the other player, as if it is the reputation of their group. Users can also manipulate other people's view of them, by sending out messengers to specific areas, and if they interact with another group, it changes to reflect what the person said.
 
 Make some equation to find the chance they accept the new info, something like the difference between current and new, multiplied by something, multiplied by the charisma level of the messenger, probably added later, to find the percent.
@@ -6,7 +12,20 @@ This can combine with the fact that villages or locations can be "subscribed" to
 Maybe they shouldn't be spies. How about:
 Spies and just normal messengers, scouts or normal workers somehow allied with you, will tell you obvious stuff, like enemies approaching, but maybe more secret stuff, added later could only be accessible by spies.
 
-Average sizes:
+### Soldiers
+Add the ability to buy barracks, that produce soldiers. Make it so you can send them to attack a village, hopefully win. Make it so you now control that village. Make it so you can somehow switch bases. Make it so the opponent can attack a base.
+General:
+Make it so you can just place soldiers on a village, defending from enemies, but not actually attacking, or have them attack.
+
+### Trading
+You are never given a direct knowledge of the number of a material in existence.
+You can offer items to bid, but have to spread knowledge of the bid yourself, maybe some spreads naturally, if it is particularily exciting (possible feature).
+The movements of people moving materials between places or people can be witnessed, giving you more knowledge of the market.
+Materials can stolen from locations you have gotten.
+
+## Metrics
+
+Average village sizes:
 
 Villages:
 Tiny: 100
@@ -42,14 +61,3 @@ Popularity = average population of the cities / 200
 Average walking speed is 2km an hour or 0.5 a turn
 
 Given that popularity isn't a percentage, it makes sense to not care about your village population, as newsworthiness is what effects whether people will spread it, once they are already there.
-
-Soldiers: The Next Step.
-Add the ability to buy barracks, that produce soldiers. Make it so you can send them to attack a village, hopefully win. Make it so you now control that village. Make it so you can somehow switch bases. Make it so the opponent can attack a base.
-General:
-Make it so you can just place soldiers on a village, defending from enemies, but not actually attacking, or have them attack.
-
-Trading:
-You are never given a direct knowledge of the number of a material in existence.
-You can offer items to bid, but have to spread knowledge of the bid yourself, maybe some spreads naturally, if it is particularily exciting (possible feature).
-The movements of people moving materials between places or people can be witnessed, giving you more knowledge of the market.
-Materials can stolen from locations you have gotten.

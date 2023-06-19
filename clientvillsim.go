@@ -1,45 +1,55 @@
 package main
 
 import (
-    "fmt"
-    "os"
+        "fmt"
+        "os"
 
-    tea "github.com/charmbracelet/bubbletea"
+        tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
+        buffer string
 }
 
 func initialModel() model {
-	return model{
-	}
+        return model{}
 }
 
 func (m model) Init() tea.Cmd {
-    // Just return `nil`, which means "no I/O right now, please."
-    return nil
+        return nil
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    switch msg := msg.(type) {
-    case tea.KeyMsg:
-        switch msg.String() {
-        case "ctrl+c", "q":
-            return m, tea.Quit
+        switch msg := msg.(type) {
+        case tea.KeyMsg:
+                switch msg.String() {
+                case "ctrl+c", "q":
+                        return m, tea.Quit
+                case "esc":
+                        break
+                case "backspace":
+                        if len(m.buffer) > 0 {
+                                m.buffer = m.buffer[:len(m.buffer)-1]
+                        }
+                        return m, nil
+                default:
+                        m.buffer += msg.String()
+                        return m, nil
+
+                }
         }
-    }
-    return m, nil
+        return m, nil
 }
 
 func (m model) View() string {
-    s := "Placeholder\n\n"
-    return s
+        s := "Input: " + m.buffer
+        return s
 }
 
 func main() {
-    p := tea.NewProgram(initialModel())
-    if _, err := p.Run(); err != nil {
-        fmt.Printf("Alas, there's been an error: %v", err)
-        os.Exit(1)
-    }
+        p := tea.NewProgram(initialModel())
+        if _, err := p.Run(); err != nil {
+                fmt.Printf("There has been an error: %v", err)
+                os.Exit(1)
+        }
 }

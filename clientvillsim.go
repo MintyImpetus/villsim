@@ -1,8 +1,12 @@
 package main
 
 import (
-	"fmt"
+    "fmt"
+    "os"
+
+    tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
+	fmt.Println("Hello World...")
 }

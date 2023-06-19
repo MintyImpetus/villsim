@@ -35,7 +35,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
                 default:
                         m.buffer += msg.String()
                         return m, nil
-
                 }
         }
         return m, nil

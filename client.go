@@ -3,13 +3,28 @@ package main
 import (
         "fmt"
         "os"
-
+	"strconv"
         tea "github.com/charmbracelet/bubbletea"
 )
+
+type player struct {
+	knownLocations []string
+	base           int
+	newsFeed       []article
+	money          int
+}
+
+type article struct {
+	title   string
+	content string
+	date    string
+}
 
 type model struct {
         buffer string
 }
+
+var user player
 
 func initialModel() model {
         return model{}
@@ -41,7 +56,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-        s := "Input: " + m.buffer
+        s := ""
+	s += "Coins: " + strconv.Itoa(user.money) + "\n"
+        s += "Input: " + m.buffer
         return s
 }
 

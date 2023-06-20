@@ -18,6 +18,7 @@ The title screen, for the terminal version, will open with an ascii art VillSim,
 It will allow you to input the port and ip of the server to connect to in a way more elegant then just a line by line readLine().
 The title screen should probably be moved to inside the bubbletea View() function, so that as the user types, it can update the title screen to contain the ip and port below the logo, while being centered.
 edit: The title screen does not need to be moved inside bubbletea. The ReadString() command has all that is required for an easy to understand ip and port input area.
+If I want more fancy features in the title screen, it may be wise to use bubbletea for it, as well as https://github.com/charmbracelet/bubbles, for pre-built elements.
 
 ### Soldiers
 Add the ability to buy barracks, that produce soldiers. Make it so you can send them to attack a village, hopefully win. Make it so you now control that village. Make it so you can somehow switch bases. Make it so the opponent can attack a base.

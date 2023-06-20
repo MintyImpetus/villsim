@@ -63,6 +63,14 @@ func (m model) View() string {
 }
 
 func main() {
+	fmt.Println(`
+ _____  _  _  _  _____  _        
+|  |  ||_|| || ||   __||_| _____ 
+|  |  || || || ||__   || ||     |
+ \___/ |_||_||_||_____||_||_|_|_|
+
+VERSION: somewhere-in-alpha
+`)
         p := tea.NewProgram(initialModel())
         if _, err := p.Run(); err != nil {
                 fmt.Printf("There has been an error: %v", err)

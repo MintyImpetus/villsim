@@ -8,6 +8,8 @@ Add time to the soldiers and baracks. Eg, make it take time to build the baracks
 
 Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
 
+Seed the random number generator so numbers are unpredictable.
+
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 */
 

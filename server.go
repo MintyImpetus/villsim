@@ -8,6 +8,9 @@ Add time to the soldiers and baracks. Eg, make it take time to build the baracks
 
 Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
 
+Seed the random number generator so numbers are unpredictable and incorporate this into procedural generation to have "seeds."
+
+
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 
 If there is an error with baracks prices not increasing it is because divding an int by 10 causes it to be rounded.

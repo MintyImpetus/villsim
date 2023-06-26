@@ -9,6 +9,8 @@ Add time to the soldiers and baracks. Eg, make it take time to build the baracks
 Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
 
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
+
+If there is an error with baracks prices not increasing it is because divding an int by 10 causes it to be rounded.
 */
 
 package main
@@ -137,17 +139,18 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		successful := true
 		response += `"output": "`
 		currentPlayer := playerList[connId]
+		baracksCost := 80
 		currentLocationId := getLocationId(strings.TrimSpace(string(dArray[1])))
 		if getLocationId(strings.TrimSpace(string(dArray[1]))) == "" {
 			successful = false
 			response += "no such location"
 		} else {
-			if currentPlayer.money > 99 {
-				//currentPlayer.baracks[getLocationId(strings.TrimSpace(string(dArray[1])))] += 1
+			totalBaracksCost := baracksCost + baracksCost * locationList[currentLocationId].baracks[connId] / 3
+			if currentPlayer.money >=  totalBaracksCost {
 				currentLocation := locationList[currentLocationId]
 				currentLocation.baracks[connId] += 1
 				locationList[currentLocationId] = currentLocation
-				currentPlayer.money -= 99
+				currentPlayer.money -= totalBaracksCost
 			} else {
 				successful = false
 			}
@@ -205,7 +208,6 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += `"output": [`
 		for index, currentLocationId := range playerList[connId].knownLocations {
 			currentLocation := locationList[currentLocationId]
-			fmt.Println(currentLocation)
 			response += ` "`
 			response += currentLocation.name + `"`
 			if index < len(playerList[connId].knownLocations)-1 {

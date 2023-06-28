@@ -379,7 +379,8 @@ func gameLoop() {
 			playerList[key] = currentPlayer
 		}
 		for key, currentLocation := range locationList {
-			for key, barackNumber := range currentLocation.baracks {
+			for key, _ := range currentLocation.baracks {
+				barackNumber := currentLocation.baracks[key]
 				if barackNumber > 0 {
 					currentLocation.soldiers[key] = barackNumber * currentLocation.population / 100
 				}

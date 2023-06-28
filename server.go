@@ -135,6 +135,26 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		response += strings.TrimSpace(string(dArray[1]))
 		response += `", `
 		response += `"result": "success"`
+	} else if strings.TrimSpace(string(dArray[0])) == "move" {
+		currentPlayer := playerList[connId]
+		specifiedPopulation, err := strconv.Atoi(strings.TrimSpace(string(dArray[1])))
+		if err != nil {
+			response += `"result": "error"`
+		} else {
+			origin := strings.TrimSpace(string(dArray[2]))
+			if locationList[getLocationId(origin)].soldiers[connId] >= specifiedPopulation {
+				currentLocation := locationList[getLocationId(origin)]
+				currentLocation.soldiers[connId] -= specifiedPopulation
+				locationList[getLocationId(origin)] = currentLocation
+				destination := strings.TrimSpace(string(dArray[3]))
+				movingSoldierVariable := movingSoldiers{population: specifiedPopulation, origin: origin, destination: destination}
+				currentPlayer.movingSoldierList = append(currentPlayer.movingSoldierList, movingSoldierVariable)
+				playerList[connId] = currentPlayer
+				response += `"result": "success"`
+			} else {
+				response += `"result": "failed"`
+			}
+		}
 	} else if strings.TrimSpace(string(dArray[0])) == "base" {
 		response += `"output": "`
 		response += locationList[playerList[connId].base].name

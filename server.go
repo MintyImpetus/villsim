@@ -35,6 +35,7 @@ type player struct {
 	base           string
 	newsFeed       []article
 	money          int
+	movingSoldierList []movingSoldiers
 }
 
 type location struct {
@@ -52,6 +53,12 @@ type location struct {
 	distance      float64
 	baracks       map[string]int
 	soldiers      map[string]int
+}
+
+type movingSoldiers struct {
+	destination string
+	origin string
+	population int
 }
 
 type article struct {

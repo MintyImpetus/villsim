@@ -2,14 +2,18 @@
 Doing right now:
 
 Todo:
-Make soldiers appear, and do stuff.
+
+Finish soldier movement
+
+Add combat
+
+Make time balanced with baracks and keep things moving quickly
 
 Add time to the soldiers and baracks. Eg, make it take time to build the baracks and hear back if they were successful.
 
 Possibly make it so errors returned in json can be any string depicting the error, so clients can just output it.
 
 Seed the random number generator so numbers are unpredictable and incorporate this into procedural generation to have "seeds."
-
 
 Multithread the math done by attemptInfoTransfer to speed up gane loop (not important, it is only basic maths.)
 

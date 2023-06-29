@@ -271,7 +271,6 @@ func handleConnections(connId string) {
 
 	var response string
 	var updates string
-	//var renderUpdates string
 
 	toClose := false
 

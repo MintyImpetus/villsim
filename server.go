@@ -169,7 +169,7 @@ func handleActions(connId string, dArray []string) (string, bool) {
 		successful := true
 		response += `"output": "`
 		currentPlayer := playerList[connId]
-		baracksCost := 80
+		baracksCost := 200
 		currentLocationId := getLocationId(strings.TrimSpace(string(dArray[1])))
 		if getLocationId(strings.TrimSpace(string(dArray[1]))) == "" {
 			successful = false
@@ -408,7 +408,7 @@ func gameLoop() {
 			for key, _ := range currentLocation.baracks {
 				barackNumber := currentLocation.baracks[key]
 				if barackNumber > 0 {
-					currentLocation.soldiers[key] = barackNumber * currentLocation.population / 100
+					currentLocation.soldiers[key] += barackNumber * currentLocation.population / 100
 				}
 			}
 			locationList[key] = currentLocation

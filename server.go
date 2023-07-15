@@ -159,10 +159,11 @@ func handleActions(connId string, dArray []string) (string, bool) {
 				locationList[getLocationId(origin)] = currentLocation
 				pathToTravel := strings.TrimSpace(string(dArray[3]))
 				if locationList[getLocationId(pathToTravel)].start == origin || locationList[getLocationId(pathToTravel)].end == origin {
+					destination := ""
 					if locationList[getLocationId(pathToTravel)].start == origin {
-						destination := locationList[getLocationId(pathToTravel)].end
+						destination = locationList[getLocationId(pathToTravel)].end
 					} else {
-						destination := locationList[getLocationId(pathToTravel)].start
+						destination = locationList[getLocationId(pathToTravel)].start
 					}
 					movingSoldierVariable := movingSoldiers{population: specifiedPopulation, origin: origin, destination: destination, distance: locationList[getLocationId(pathToTravel)].distance}
 					currentPlayer.movingSoldiersList = append(currentPlayer.movingSoldiersList, movingSoldierVariable)

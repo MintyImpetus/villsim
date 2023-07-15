@@ -7,6 +7,8 @@ Finish soldier movement
 
 Seperate gameloop into multiple functions for better readability.
 
+Make moving the soldiers a seperate function.
+
 Add combat
 
 Make time balanced with baracks and keep things moving quickly

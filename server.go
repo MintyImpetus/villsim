@@ -65,6 +65,7 @@ type movingSoldiers struct {
 	destination string
 	origin string
 	population int
+	distance float64
 }
 
 type article struct {
@@ -152,11 +153,20 @@ func handleActions(connId string, dArray []string) (string, bool) {
 				currentLocation := locationList[getLocationId(origin)]
 				currentLocation.soldiers[connId] -= specifiedPopulation
 				locationList[getLocationId(origin)] = currentLocation
-				destination := strings.TrimSpace(string(dArray[3]))
-				movingSoldierVariable := movingSoldiers{population: specifiedPopulation, origin: origin, destination: destination}
-				currentPlayer.movingSoldierList = append(currentPlayer.movingSoldierList, movingSoldierVariable)
-				playerList[connId] = currentPlayer
-				response += `"result": "success"`
+				pathToTravel := strings.TrimSpace(string(dArray[3]))
+				if locationList[getLocationId(pathToTravel)].start == origin || locationList[getLocationId(pathToTravel)].end == origin {
+					if locationList[getLocationId(pathToTravel)].start == origin {
+						destination := locationList[getLocationId(pathToTravel)].end
+					} else {
+						destination := locationList[getLocationId(pathToTravel)].start
+					}
+					movingSoldierVariable := movingSoldiers{population: specifiedPopulation, origin: origin, destination: destination, distance: locationList[getLocationId(pathToTravel)].distance}
+					currentPlayer.movingSoldierList = append(currentPlayer.movingSoldierList, movingSoldierVariable)
+					playerList[connId] = currentPlayer
+					response += `"result": "success"`
+				} else {
+					response += `"result": "failed"`
+				}
 			} else {
 				response += `"result": "failed"`
 			}

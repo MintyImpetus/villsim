@@ -371,6 +371,18 @@ func attemptInfoTransfer(theevent event, place location, origin string, destinat
 	}
 }
 
+func makeSoldiersTravel() {
+	for key, currentPlayer := range playerList {
+		for index, _ := range currentPlayer.movingSoldiers {
+			if currentPlayer.movingSoldiers[index].distance > 0 {
+				currentPlayer.movingSoldiers[index].distance -= 1
+			}
+		}
+		playerList[key] = currentPlayer
+
+	}
+}
+
 func gameLoop() {
 	for {
 		time.Sleep(time.Second)
@@ -433,6 +445,7 @@ func gameLoop() {
 			}
 			locationList[key] = currentLocation
 		}
+		makeSoldiersTravel()
 		turn = turn + 1
 	}
 }

@@ -7,6 +7,8 @@ Finish soldier movement
 
 Seperate gameloop into multiple functions for better readability.
 
+Convert structs to use uuids to identify locations, not their names
+
 Make moving the soldiers a seperate function.
 
 Add combat

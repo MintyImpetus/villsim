@@ -5,6 +5,8 @@ Todo:
 
 Finish soldier movement
 
+Seperate gameloop into multiple functions for better readability.
+
 Add combat
 
 Make time balanced with baracks and keep things moving quickly

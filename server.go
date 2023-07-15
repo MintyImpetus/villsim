@@ -160,7 +160,7 @@ func handleActions(connId string, dArray []string) (string, bool) {
 				currentLocation.soldiers[connId] -= specifiedPopulation
 				locationList[getLocationId(origin)] = currentLocation
 				pathToTravel := strings.TrimSpace(string(dArray[3]))
-				if locationList[getLocationId(pathToTravel)].start == origin || locationList[getLocationId(pathToTravel)].end == origin {
+				if locationList[getLocationId(pathToTravel)].start == getLocationId(origin) || locationList[getLocationId(pathToTravel)].end == getLocationId(origin) {
 					destination := ""
 					if locationList[getLocationId(pathToTravel)].start == origin {
 						destination = locationList[getLocationId(pathToTravel)].end
@@ -379,10 +379,12 @@ func makeSoldiersTravel() {
 		for index, _ := range currentPlayer.movingSoldiersList {
 			if currentPlayer.movingSoldiersList[index].distance > 0 {
 				currentPlayer.movingSoldiersList[index].distance -= 1
+			} else {
+				//				locationList[getLocationId(currentPlayer.movingSoldiersList[index].destination)].soldiers[key] += currentPlayer.movingSoldiersList[index].population
+				currentPlayer.movingSoldiersList = append(currentPlayer.movingSoldiersList[:index], currentPlayer.movingSoldiersList[index+1:]...)
 			}
-		}
-		playerList[key] = currentPlayer
-
+			playerList[key] = currentPlayer
+		} 
 	}
 }
 

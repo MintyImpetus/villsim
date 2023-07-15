@@ -9,6 +9,8 @@ Seperate gameloop into multiple functions for better readability.
 
 Convert structs to use uuids to identify locations, not their names
 
+Make it so the gameloop adjusts its wait time to always take one second, as long as computation takes less than a second.
+
 Make moving the soldiers a seperate function.
 
 Add combat

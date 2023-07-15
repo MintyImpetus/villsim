@@ -45,7 +45,7 @@ type player struct {
 	base           string
 	newsFeed       []article
 	money          int
-	movingSoldierList []movingSoldiers
+	movingSoldiersList []movingSoldiers
 }
 
 type location struct {
@@ -165,7 +165,7 @@ func handleActions(connId string, dArray []string) (string, bool) {
 						destination := locationList[getLocationId(pathToTravel)].start
 					}
 					movingSoldierVariable := movingSoldiers{population: specifiedPopulation, origin: origin, destination: destination, distance: locationList[getLocationId(pathToTravel)].distance}
-					currentPlayer.movingSoldierList = append(currentPlayer.movingSoldierList, movingSoldierVariable)
+					currentPlayer.movingSoldiersList = append(currentPlayer.movingSoldiersList, movingSoldierVariable)
 					playerList[connId] = currentPlayer
 					response += `"result": "success"`
 				} else {
@@ -373,9 +373,9 @@ func attemptInfoTransfer(theevent event, place location, origin string, destinat
 
 func makeSoldiersTravel() {
 	for key, currentPlayer := range playerList {
-		for index, _ := range currentPlayer.movingSoldiers {
-			if currentPlayer.movingSoldiers[index].distance > 0 {
-				currentPlayer.movingSoldiers[index].distance -= 1
+		for index, _ := range currentPlayer.movingSoldiersList {
+			if currentPlayer.movingSoldiersList[index].distance > 0 {
+				currentPlayer.movingSoldiersList[index].distance -= 1
 			}
 		}
 		playerList[key] = currentPlayer

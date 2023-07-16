@@ -290,7 +290,11 @@ func handleActions(connId string, dArray []string) (string, bool) {
 func getLocationStatsForPlayerInJson(playerId string) string {
 	output := `[ `
 	for index, location := range playerList[playerId].knownLocations {
-		output += `"` + getLocationName(location) + `"`
+		//[ { "name": "thename", "soldiers": "soldiernumbers" }, {} ]
+		output += `{ "name": "`
+		output += getLocationName(location) + ` ", "soldiers": `
+		output += strconv.Itoa(locationList[location].soldiers[playerId])
+		output += `}`
 		if index != len(playerList[playerId].knownLocations) - 1 {
 			output += ", "
 		} else {
@@ -402,9 +406,13 @@ func makeSoldiersTravel() {
 	for key, currentPlayer := range playerList {
 		for index, _ := range currentPlayer.movingSoldiersList {
 			if currentPlayer.movingSoldiersList[index].distance > 0 {
-				currentPlayer.movingSoldiersList[index].distance -= 1
+				currentPlayer.movingSoldiersList[index].distance -= 100
+				fmt.Println("Soldiers travelling", currentPlayer.movingSoldiersList[index].distance)
 			} else {
-				//				locationList[getLocationId(currentPlayer.movingSoldiersList[index].destination)].soldiers[key] += currentPlayer.movingSoldiersList[index].population
+				fmt.Println("Soldiers arrived")
+				currentLocation := locationList[getLocationId(currentPlayer.movingSoldiersList[index].destination)]
+				currentLocation.soldiers[key] += currentPlayer.movingSoldiersList[index].population
+				locationList[getLocationId(currentPlayer.movingSoldiersList[index].destination)] = currentLocation
 				currentPlayer.movingSoldiersList = append(currentPlayer.movingSoldiersList[:index], currentPlayer.movingSoldiersList[index+1:]...)
 			}
 			playerList[key] = currentPlayer

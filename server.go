@@ -110,6 +110,15 @@ func getLocationId(name string) string {
 	return ""
 }
 
+func getLocationName(id string) string {
+	for key, currentLocation := range locationList {
+		if key == id {
+			return currentLocation.name
+		}
+	}
+	return ""
+}
+
 func inRangeOfNumbers(query float64, low float64, high float64) bool {
 	if query >= low && query <= high {
 		return true
@@ -278,11 +287,26 @@ func handleActions(connId string, dArray []string) (string, bool) {
 	return response, toClose
 }
 
+func getLocationStatsForPlayerInJson(playerId string) string {
+	output := `[ `
+	for index, location := range playerList[playerId].knownLocations {
+		output += `"` + getLocationName(location) + `"`
+		if index != len(playerList[playerId].knownLocations) - 1 {
+			output += ", "
+		} else {
+			output += " "
+		}
+	}
+	output += "] "
+	return output
+}
+
 func updateClient(connId string) string {
 	currentPlayer := playerList[connId]
 	response := `"player": { `
 	response += `"base": "` + locationList[currentPlayer.base].name + `", `
-	response += `"money": ` + strconv.Itoa(currentPlayer.money) + " "
+	response += `"money": ` + strconv.Itoa(currentPlayer.money) + ", "
+	response += `"locations": "` + getLocationStatsForPlayerInJson(connId) + `" `
 	response += "}, "
 	response += `"time": "` + strconv.Itoa(turn) + `" `
 	return response

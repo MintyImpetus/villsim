@@ -1,6 +1,6 @@
 # An Outline Of What Is To Come
 
-This is not a organized list of planned features, just some ideas I wrote down at one point.
+This is not an organized list of planned features, just some ideas I wrote down at one point.
 
 ## Planned Features
 

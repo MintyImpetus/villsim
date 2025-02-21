@@ -12,6 +12,8 @@ This can combine with the fact that villages or locations can be "subscribed" to
 Maybe they shouldn't be spies. How about:
 Spies and just normal messengers, scouts or normal workers somehow allied with you, will tell you obvious stuff, like enemies approaching, but maybe more secret stuff, added later could only be accessible by spies.
 
+If stuff like inventions and the tech system is going to spread through interaction with other places, it seems that each place is going to need an algorithm that is capable of playing the game to an extent, so that inventions and interactions do not always have to be initiated by the players, especially if the scale does end up being many many places, too many to populate with just players.
+
 ### Title Screen
 
 The title screen, for the terminal version, will open with an ascii art VillSim, with the version number below it, similar to the Doom Emacs splash screen.

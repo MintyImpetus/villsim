@@ -2,6 +2,8 @@
 
 This is not an organized list of planned features, just some ideas I wrote down at one point.
 
+Maybe I could make villsim a proper 1st person (gameplay not graphics) game, as in instead of you just being a "village" and trying to succeed, it could more be that you are a person in this world, you can have all the fun of an open world rpg, but the information system is cool and simulated. Perhaps you could even be a leader and kind of take control of your town / city / country and wage wars. I would want to keep it minimal though, I am trying to stay away from having an overly realistic game. I cannot compete with Dwarf Fortress or Civilization, so I should really try and focus on having unique gameplay and deep but not many aspects.
+
 ## Planned Features
 
 Users can see the recent achievements, and the stats of the other player, as if it is the reputation of their group. Users can also manipulate other people's view of them, by sending out messengers to specific areas, and if they interact with another group, it changes to reflect what the person said.
@@ -13,6 +15,9 @@ Maybe they shouldn't be spies. How about:
 Spies and just normal messengers, scouts or normal workers somehow allied with you, will tell you obvious stuff, like enemies approaching, but maybe more secret stuff, added later could only be accessible by spies.
 
 If stuff like inventions and the tech system is going to spread through interaction with other places, it seems that each place is going to need an algorithm that is capable of playing the game to an extent, so that inventions and interactions do not always have to be initiated by the players, especially if the scale does end up being many many places, too many to populate with just players.
+
+I have an idea to potentially introduce a magic system of some form.
+It could work through a kind of dark ritual type magic, not the spell casting style of "wizards", but more like stuff in beserk or other dark fantasy settings, where magic is more ritualistic and takes a long time to do but has powerful, game impacting effects. Maybe these rituals could take a long time and become heard through the information web, possibly allowing opponents to target the areas the ritual is probably happening in to stop it?
 
 ### Title Screen
 
